@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Corporativo — Boletaenlinea</title>
+<link rel="icon" href="https://boletaenlinea.co/wp-content/uploads/2026/01/favicon-2-300x300.png">
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+  /* ── VARIABLES ── */
+  :root {
+    --bel: #0D1E8D;
+    --bel-dark: #091466;
+    --bel-red: #E8232A;
+    --bel-light: #EEF1FA;
+    --bel-border: #d4daef;
+    --sidebar-w: 210px;
+    --header-h: 52px;
+    --tabs-h: 38px;
+    --status-h: 28px;
+    --bg: #ffffff;
+    --bg2: #f7f8fc;
+    --text: #1a1a2e;
+    --text2: #5a6080;
+    --text3: #9098b0;
+    --border: #e4e8f0;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 2px 12px rgba(13,30,141,.08);
+    --shadow-lg: 0 8px 32px rgba(13,30,141,.15);
+  }
+
+  /* ── LAYOUT ── */
+  #app { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    background: linear-gradient(140deg, var(--bel-dark) 0%, var(--bel) 55%, #1e3db5 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .login-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.3);
+    animation: slideUp .4s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .login-logo { margin-bottom: 28px; text-align: center; }
+  .login-logo img { height: 36px; filter: none; }
+  .login-logo .logo-fallback { display: none; font-size: 20px; font-weight: 900; color: var(--bel); letter-spacing: -1px; }
+  .login-label { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .login-input {
+    width: 100%; padding: 11px 14px; border-radius: 9px;
+    border: 1.5px solid var(--border); font-size: 13.5px;
+    outline: none; color: var(--text); margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .login-input:focus { border-color: var(--bel); }
+  .login-input.error { border-color: var(--bel-red); }
+  .login-btn {
+    width: 100%; padding: 13px; background: var(--bel); color: #fff;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: background .2s; letter-spacing: .3px;
+  }
+  .login-btn:hover { background: var(--bel-dark); }
+  .login-btn:disabled { background: #aab; cursor: default; }
+  .login-error { color: var(--bel-red); font-size: 12.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
+  .login-shortcuts { background: var(--bel-light); border-radius: 10px; padding: 13px 14px; margin-top: 18px; }
+  .login-shortcuts p { font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+  .login-shortcuts button {
+    display: block; width: 100%; text-align: left; padding: 3px 0;
+    background: none; border: none; cursor: pointer; font-size: 11px;
+    color: var(--bel); font-family: 'Courier New', monospace; font-weight: 600;
+  }
+  .login-shortcuts button:hover { color: var(--bel-dark); }
+
+  /* ── HEADER ── */
+  #header {
+    height: var(--header-h); background: var(--bel);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; flex-shrink: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo img { height: 22px; filter: brightness(0) invert(1); }
+  .header-logo .fallback { display: none; font-size: 15px; font-weight: 900; color: white; }
+  .header-sep { color: rgba(255,255,255,.25); font-size: 18px; }
+  .header-title { color: rgba(255,255,255,.7); font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .btn-save {
+    display: flex; align-items: center; gap: 5px; padding: 5px 13px;
+    border-radius: 7px; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.1); color: #fff; cursor: pointer;
+    font-size: 11.5px; font-weight: 600; transition: all .2s;
+  }
+  .btn-save:hover { background: rgba(255,255,255,.18); }
+  .btn-save.saved { background: rgba(46,125,50,.75); border-color: rgba(46,125,50,.5); }
+  .user-badge { display: flex; align-items: center; gap: 8px; }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,.2); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 800; color: #fff;
+  }
+  .user-name { color: rgba(255,255,255,.75); font-size: 11.5px; }
+  .btn-logout {
+    padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.07); color: rgba(255,255,255,.65);
+    cursor: pointer; font-size: 12px; transition: all .2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,.15); }
+
+  /* ── DEPT TABS ── */
+  #dept-tabs {
+    height: var(--tabs-h); background: var(--bel-dark);
+    display: flex; align-items: flex-end; padding: 0 14px; flex-shrink: 0;
+  }
+  .dept-tab {
+    display: flex; align-items: center; gap: 6px; padding: 8px 15px;
+    background: transparent; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 400; color: rgba(255,255,255,.55);
+    border-radius: 6px 6px 0 0; transition: all .15s; font-family: inherit;
+  }
+  .dept-tab:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); }
+  .dept-tab.active { background: var(--bg2); color: var(--bel); font-weight: 700; }
+  .dept-tab svg { width: 14px; height: 14px; }
+
+  /* ── BODY ── */
+  #body { flex: 1; display: flex; overflow: hidden; background: var(--bg2); }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    border-right: 1px solid var(--border); background: var(--bg2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .sidebar-header {
+    padding: 10px 13px 5px; font-size: 9.5px; font-weight: 700;
+    color: var(--text3); text-transform: uppercase; letter-spacing: .1em;
+  }
+  .pages-list { flex: 1; overflow-y: auto; padding-bottom: 4px; }
+  .page-item {
+    display: flex; align-items: center; gap: 7px; padding: 8px 10px;
+    margin: 1px 5px; cursor: pointer; border-radius: var(--radius);
+    font-size: 12.5px; border: 1px solid transparent;
+    transition: all .12s; color: var(--text2); user-select: none;
+  }
+  .page-item:hover { background: var(--bg); color: var(--text); }
+  .page-item.active { background: var(--bg); font-weight: 700; }
+  .page-item svg { width: 13px; height: 13px; flex-shrink: 0; opacity: .7; }
+  .page-item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .page-del {
+    padding: 2px 4px; background: none; border: none; cursor: pointer;
+    color: var(--text3); border-radius: 4px; font-size: 13px; line-height: 1;
+    opacity: 0; transition: opacity .15s;
+  }
+  .page-item.active .page-del { opacity: .6; }
+  .page-item.active .page-del:hover { opacity: 1; color: var(--bel-red); }
+  .page-rename-input {
+    width: 100%; font-size: 12px; border: 1px solid var(--bel);
+    background: var(--bg); padding: 5px 8px; border-radius: 6px;
+    outline: none; color: var(--text); margin: 2px 6px; box-sizing: border-box;
+    width: calc(100% - 12px);
+  }
+  .sidebar-add { padding: 6px 7px; border-top: 1px solid var(--border); }
+  .sidebar-add-form { padding: 7px 8px; border-top: 1px solid var(--border); }
+  .btn-new-page {
+    width: 100%; display: flex; align-items: center; justify-content: center;
+    gap: 5px; padding: 7px; font-size: 11.5px; border-radius: 7px;
+    cursor: pointer; font-weight: 600; font-family: inherit; transition: all .15s;
+    background: transparent;
+  }
+  .btn-new-page:hover { background: var(--bel-light); }
+  .add-input {
+    width: 100%; font-size: 12px; padding: 7px 9px; border-radius: 7px;
+    border: 1.5px solid var(--bel); background: var(--bg); color: var(--text);
+    margin-bottom: 5px; outline: none; box-sizing: border-box;
+  }
+  .add-actions { display: flex; gap: 5px; }
+  .btn-create {
+    flex: 1; padding: 5px; font-size: 11px; border: none; border-radius: 7px;
+    color: #fff; cursor: pointer; font-weight: 700; font-family: inherit;
+  }
+  .btn-cancel-add {
+    padding: 5px 10px; font-size: 11px; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--text2);
+    font-family: inherit;
+  }
+  .empty-dept {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 12px; padding: 32px; text-align: center;
+  }
+  .empty-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--bel-light); display: flex; align-items: center; justify-content: center;
+  }
+  .empty-icon svg { width: 26px; height: 26px; }
+  .empty-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .empty-sub { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .btn-empty-add {
+    display: flex; align-items: center; gap: 6px; padding: 9px 20px;
+    border-radius: 9px; border: 2px solid; background: transparent;
+    cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit;
+    transition: all .15s;
+  }
+
+  /* ── WORKSPACE ── */
+  #workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .workspace-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 16px; border-bottom: 1px solid var(--border);
+    background: var(--bg); flex-shrink: 0;
+  }
+  .toolbar-breadcrumb { display: flex; align-items: center; gap: 8px; }
+  .breadcrumb-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .breadcrumb-dept { font-size: 12px; color: var(--text2); }
+  .breadcrumb-page { font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .toolbar-actions { display: flex; align-items: center; gap: 5px; }
+  .view-btn {
+    padding: 5px 11px; font-size: 11.5px; border-radius: 7px; cursor: pointer;
+    font-family: inherit; border: 1px solid var(--border); background: transparent;
+    color: var(--text2); font-weight: 400; transition: all .15s;
+  }
+  .view-btn:hover { background: var(--bel-light); }
+  .view-btn.active { font-weight: 700; }
+  .btn-open {
+    display: flex; align-items: center; gap: 4px; padding: 5px 10px;
+    font-size: 11.5px; border-radius: 7px; border: 1px solid var(--border);
+    background: transparent; cursor: pointer; color: var(--text2);
+    font-family: inherit; transition: all .15s;
+  }
+  .btn-open:hover { background: var(--bg2); }
+
+  /* ── PANELS ── */
+  .panels { flex: 1; display: flex; overflow: hidden; }
+  .panel-preview { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .panel-editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .panel-divider { width: 1px; background: var(--border); flex-shrink: 0; }
+  .panel-bar {
+    padding: 5px 14px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; font-size: 10.5px; font-weight: 600; letter-spacing: .05em;
+  }
+  .panel-bar.preview { color: rgba(255,255,255,.85); }
+  .panel-bar.editor { background: #1a1b2e; color: rgba(255,255,255,.5); }
+  .preview-frame { flex: 1; border: none; background: #fff; display: block; }
+  .code-editor {
+    flex: 1; resize: none; border: none; outline: none;
+    padding: 14px 16px; font-family: 'Courier New', 'Cascadia Code', monospace;
+    font-size: 12px; line-height: 1.65; background: #1e1e2e;
+    color: #cdd6f4; tab-size: 2;
+  }
+
+  /* ── STATUS BAR ── */
+  #status-bar {
+    height: var(--status-h); background: var(--bg2); border-top: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 16px; gap: 20px;
+    font-size: 10.5px; color: var(--text3); flex-shrink: 0;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #2E7D32; display: inline-block; margin-right: 5px; }
+  .status-right { margin-left: auto; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn .15s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal-box {
+    background: #fff; border-radius: 16px; padding: 28px;
+    max-width: 320px; width: 90%; box-shadow: 0 32px 80px rgba(0,0,0,.25);
+    animation: slideUp .2s ease;
+  }
+  .modal-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+  .modal-body { font-size: 13px; color: var(--text2); margin-bottom: 22px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; }
+  .btn-modal-cancel {
+    flex: 1; padding: 10px; border-radius: 9px; border: 1px solid var(--border);
+    background: transparent; cursor: pointer; font-size: 13px; color: var(--text2); font-family: inherit;
+  }
+  .btn-modal-del {
+    flex: 1; padding: 10px; border-radius: 9px; border: none;
+    background: var(--bel-red); cursor: pointer; font-size: 13px; color: #fff;
+    font-weight: 800; font-family: inherit;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #ccd; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIGURACIÓN — edita aquí tus usuarios
+// ══════════════════════════════════════════════
+const CONFIG = {
+  usuarios: [
+    { id:"admin",    email:"admin@boletaenlinea.co",          pass:"admin2024",   nombre:"Administrador",       rol:"admin", dept:null,            av:"AD" },
+    { id:"cont",     email:"contabilidad@boletaenlinea.co",   pass:"cont2024",    nombre:"Contabilidad",        rol:"user",  dept:"contabilidad",   av:"CO" },
+    { id:"oper",     email:"operaciones@boletaenlinea.co",    pass:"oper2024",    nombre:"Operaciones",         rol:"user",  dept:"operaciones",    av:"OP" },
+    { id:"comun",    email:"comunicaciones@boletaenlinea.co", pass:"com2024",     nombre:"Comunicaciones",      rol:"user",  dept:"comunicaciones", av:"CM" },
+    { id:"ger",      email:"gerencia@boletaenlinea.co",       pass:"ger2024",     nombre:"Gerencia Comercial",  rol:"user",  dept:"gerencia",       av:"GC" },
+  ],
+  departamentos: [
+    { id:"contabilidad",   label:"Contabilidad",       color:"#1565C0", iconPath:'M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3M9 11l3 3L22 4' },
+    { id:"operaciones",    label:"Operaciones",         color:"#2E7D32", iconPath:'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z' },
+    { id:"comunicaciones", label:"Comunicaciones",      color:"#6A1B9A", iconPath:'M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z' },
+    { id:"gerencia",       label:"Gerencia Comercial",  color:"#E65100", iconPath:'M3 3v18h18M9 17V9m4 8V5m4 12v-3' },
+  ]
+};
+
+// ══════════════════════════════════════════════
+//  PÁGINAS DEMO POR DEPARTAMENTO
+// ══════════════════════════════════════════════
+const DEMO = {
+  contabilidad: [
+    { id:"liq", title:"Liquidación de Eventos", content: genPageContabilidad1() },
+    { id:"gas", title:"Informe de Gastos",       content: genPageContabilidad2() },
+  ],
+  operaciones: [
+    { id:"ev",  title:"Eventos Activos",          content: genPageOperaciones1() },
+    { id:"pro", title:"Protocolo de Operación",   content: genPageOperaciones2() },
+  ],
+  comunicaciones: [
+    { id:"kit", title:"Kit de Marca Digital",     content: genPageComunicaciones1() },
+    { id:"cal", title:"Calendario Editorial",     content: genPageComunicaciones2() },
+  ],
+  gerencia: [
+    { id:"kpi", title:"KPIs Comerciales",         content: genPageGerencia1() },
+    { id:"pie", title:"Pipeline de Ventas",       content: genPageGerencia2() },
+  ]
+};
+
+// ══════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ══════════════════════════════════════════════
+let S = {
+  user: null,
+  pages: {},
+  dept: null,
+  pageId: null,
+  view: "preview",   // preview | editor | split
+  addOpen: false,
+  newTitle: "",
+  renaming: null,
+  renVal: "",
+  delTarget: null,
+  saved: false,
+};
+
+// ══════════════════════════════════════════════
+//  PERSISTENCIA  (localStorage)
+// ══════════════════════════════════════════════
+const LS_PAGES = "bel_pages_v5";
+const LS_SESS  = "bel_sess_v5";
+
+function loadData() {
+  try {
+    const sess = localStorage.getItem(LS_SESS);
+    if (sess) {
+      const u = JSON.parse(sess);
+      S.user = CONFIG.usuarios.find(x => x.id === u.id) || null;
+    }
+  } catch(e) {}
+  try {
+    const pg = localStorage.getItem(LS_PAGES);
+    S.pages = pg ? JSON.parse(pg) : JSON.parse(JSON.stringify(DEMO));
+  } catch(e) {
+    S.pages = JSON.parse(JSON.stringify(DEMO));
+  }
+  if (S.user) {
+    const avail = availDepts();
+    S.dept = avail[0]?.id || null;
+    if (S.dept) S.pageId = (S.pages[S.dept]||[])[0]?.id || null;
+  }
+}
+
+function savePages() {
+  localStorage.setItem(LS_PAGES, JSON.stringify(S.pages));
+  S.saved = true;
+  render();
+  setTimeout(() => { S.saved = false; render(); }, 2000);
+}
+
+function login(user) {
+  S.user = user;
+  localStorage.setItem(LS_SESS, JSON.stringify({ id: user.id }));
+  const avail = availDepts();
+  S.dept = avail[0]?.id || null;
+  if (S.dept) S.pageId = (S.pages[S.dept]||[])[0]?.id || null;
+  render();
+}
+
+function logout() {
+  localStorage.removeItem(LS_SESS);
+  S.user = null; S.dept = null; S.pageId = null;
+  render();
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function availDepts() {
+  if (!S.user) return [];
+  return S.user.rol === "admin"
+    ? CONFIG.departamentos
+    : CONFIG.departamentos.filter(d => d.id === S.user.dept);
+}
+function currentDept() { return CONFIG.departamentos.find(d => d.id === S.dept); }
+function currentPages() { return S.pages[S.dept] || []; }
+function activePage() { return currentPages().find(p => p.id === S.pageId); }
+
+function setDept(id) {
+  S.dept = id;
+  const list = S.pages[id] || [];
+  S.pageId = list[0]?.id || null;
+  S.addOpen = false; S.renaming = null;
+  render();
+}
+function setPage(id) {
+  S.pageId = id;
+  S.renaming = null;
+  render();
+}
+function setView(v) { S.view = v; render(); updatePreview(); }
+
+function addPage() {
+  const t = S.newTitle.trim();
+  if (!t) return;
+  const d = currentDept();
+  const id = "p" + Date.now();
+  const newP = {
+    id, title: t,
+    content: templateBlank(t, d?.label || "", d?.color || "#0D1E8D")
+  };
+  S.pages[S.dept] = [...(S.pages[S.dept]||[]), newP];
+  S.pageId = id; S.newTitle = ""; S.addOpen = false;
+  render(); updatePreview();
+}
+
+function deletePage(id) {
+  const list = (S.pages[S.dept]||[]).filter(p => p.id !== id);
+  S.pages[S.dept] = list;
+  S.pageId = list[0]?.id || null;
+  S.delTarget = null;
+  render(); updatePreview();
+}
+
+function applyRename() {
+  const t = S.renVal.trim();
+  if (t) {
+    S.pages[S.dept] = (S.pages[S.dept]||[]).map(p =>
+      p.id === S.renaming ? { ...p, title: t } : p
+    );
+  }
+  S.renaming = null; render();
+}
+
+function updateContent(val) {
+  S.pages[S.dept] = (S.pages[S.dept]||[]).map(p =>
+    p.id === S.pageId ? { ...p, content: val } : p
+  );
+  // live preview
+  const frame = document.querySelector(".preview-frame");
+  if (frame) frame.srcdoc = val;
+}
+
+function updatePreview() {
+  const frame = document.querySelector(".preview-frame");
+  const pg = activePage();
+  if (frame && pg) frame.srcdoc = pg.content;
+}
+
+function openInTab() {
+  const pg = activePage();
+  if (!pg) return;
+  const b = new Blob([pg.content], { type: "text/html" });
+  window.open(URL.createObjectURL(b), "_blank");
+}
+
+// ══════════════════════════════════════════════
+//  RENDER PRINCIPAL
+// ══════════════════════════════════════════════
+function render() {
+  const app = document.getElementById("app");
+  if (!S.user) {
+    app.innerHTML = renderLogin();
+    bindLogin();
+    return;
+  }
+  app.innerHTML = renderPortal();
+  bindPortal();
+  updatePreview();
+}
+
+// ── LOGIN ──
+function renderLogin() {
+  return `
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">
+        <img src="https://boletaenlinea.co/wp-content/uploads/2026/01/boletaenlinea-logo.svg"
+          alt="Boletaenlinea" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="logo-fallback">🎟 boletaenlinea</div>
+        <p style="font-size:10.5px;color:#999;margin-top:10px;letter-spacing:.8px;text-transform:uppercase">Portal Corporativo Interno</p>
+      </div>
+      <h2 style="font-size:20px;font-weight:800;color:#0D1E8D;margin-bottom:4px">Iniciar sesión</h2>
+      <p style="font-size:12px;color:#999;margin-bottom:22px">Acceso exclusivo para colaboradores</p>
+      <label class="login-label">Correo corporativo</label>
+      <input id="inp-email" class="login-input" type="email" placeholder="usuario@boletaenlinea.co" autocomplete="email">
+      <label class="login-label">Contraseña</label>
+      <input id="inp-pass" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password">
+      <div id="login-err" style="display:none" class="login-error">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="login-err-txt"></span>
+      </div>
+      <button class="login-btn" id="btn-login">Ingresar al Portal →</button>
+      <div class="login-shortcuts">
+        <p>Accesos rápidos (demo):</p>
+        ${CONFIG.usuarios.map(u => `<button class="shortcut-btn" data-email="${u.email}" data-pass="${u.pass}">${u.email}</button>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function bindLogin() {
+  document.getElementById("btn-login").onclick = doLogin;
+  document.getElementById("inp-pass").onkeydown = e => { if (e.key === "Enter") doLogin(); };
+  document.getElementById("inp-email").onkeydown = e => { if (e.key === "Enter") doLogin(); };
+  document.querySelectorAll(".shortcut-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.getElementById("inp-email").value = btn.dataset.email;
+      document.getElementById("inp-pass").value = btn.dataset.pass;
+      document.getElementById("login-err").style.display = "none";
+      document.getElementById("inp-email").classList.remove("error");
+      document.getElementById("inp-pass").classList.remove("error");
+    };
+  });
+}
+
+function doLogin() {
+  const em = document.getElementById("inp-email").value.trim().toLowerCase();
+  const pw = document.getElementById("inp-pass").value;
+  const u = CONFIG.usuarios.find(x => x.email === em && x.pass === pw);
+  if (u) {
+    login(u);
+  } else {
+    document.getElementById("inp-email").classList.add("error");
+    document.getElementById("inp-pass").classList.add("error");
+    const err = document.getElementById("login-err");
+    document.getElementById("login-err-txt").textContent = "Correo o contraseña incorrectos";
+    err.style.display = "flex";
+  }
+}
+
+// ── PORTAL ──
+function renderPortal() {
+  const avail = availDepts();
+  const d = currentDept();
+  const list = currentPages();
+  const pg = activePage();
+  const color = d?.color || "#0D1E8D";
+
+  return `
+  <div id="portal" style="height:100vh;display:flex;flex-direction:column;overflow:hidden;">
+    ${renderHeader()}
+    ${renderDeptTabs(avail, d)}
+    <div id="body" style="flex:1;display:flex;overflow:hidden;">
+      ${renderSidebar(list, d, pg)}
+      ${pg ? renderWorkspace(pg, d) : renderEmpty(d)}
+    </div>
+    ${renderStatusBar()}
+    ${S.delTarget ? renderDeleteModal() : ""}
+  </div>`;
+}
+
+function renderHeader() {
+  return `
+  <div id="header">
+    <div class="header-left">
+      <div class="header-logo">
+        <img src="https://boletaenlinea.co/wp-content/uploads/2026/01/boletaenlinea-logo.svg"
+          alt="BEL" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="fallback">🎟 BEL</div>
+      </div>
+      <span class="header-sep">|</span>
+      <span class="header-title">Portal Corporativo</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-save ${S.saved?"saved":""}" id="btn-save">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          ${S.saved
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>'}
+        </svg>
+        ${S.saved ? "Guardado" : "Guardar cambios"}
+      </button>
+      <div class="user-badge">
+        <div class="user-avatar">${S.user.av}</div>
+        <span class="user-name">${S.user.nombre}</span>
+      </div>
+      <button class="btn-logout" id="btn-logout" title="Cerrar sesión">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderDeptTabs(avail, active) {
+  return `
+  <div id="dept-tabs">
+    ${avail.map(d => `
+      <button class="dept-tab ${d.id===S.dept?"active":""}" data-dept="${d.id}"
+        style="${d.id===S.dept?`color:${d.color}`:""}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="${d.iconPath}"/>
+        </svg>
+        ${d.label}
+      </button>
+    `).join("")}
+  </div>`;
+}
+
+function renderSidebar(list, dept, activePg) {
+  const color = dept?.color || "#0D1E8D";
+  return `
+  <div id="sidebar">
+    <div class="sidebar-header">${dept?.label || "Páginas"}</div>
+    <div class="pages-list" id="pages-list">
+      ${list.length === 0
+        ? `<div style="padding:14px 12px;font-size:12px;color:var(--text3);font-style:italic">Sin páginas aún</div>`
+        : list.map(p => {
+            if (S.renaming === p.id) {
+              return `<input class="page-rename-input" id="rename-input" value="${escHtml(S.renVal)}" placeholder="Nombre..." autocomplete="off">`;
+            }
+            const sel = S.pageId === p.id;
+            return `<div class="page-item ${sel?"active":""}" data-pid="${p.id}"
+              style="${sel?`border-color:${color};color:${color}`:""}"
+              title="Doble clic para renombrar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:${sel?color:"inherit"}">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>${escHtml(p.title)}</span>
+              ${sel ? `<button class="page-del" data-del="${p.id}" title="Eliminar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+                </svg>
+              </button>` : ""}
+            </div>`;
+          }).join("")
+      }
+    </div>
+    ${S.addOpen
+      ? `<div class="sidebar-add-form">
+          <input class="add-input" id="add-input" placeholder="Nombre de la página..." value="${escHtml(S.newTitle)}" autocomplete="off"
+            style="border-color:${color}">
+          <div class="add-actions">
+            <button class="btn-create" id="btn-create" style="background:${color}">Crear</button>
+            <button class="btn-cancel-add" id="btn-cancel-add">✕</button>
+          </div>
+        </div>`
+      : `<div class="sidebar-add">
+          <button class="btn-new-page" id="btn-new-page"
+            style="border:1.5px dashed ${color};color:${color}">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva página
+          </button>
+        </div>`
+    }
+  </div>`;
+}
+
+function renderWorkspace(pg, dept) {
+  const color = dept?.color || "#0D1E8D";
+  const showPreview = S.view === "preview" || S.view === "split";
+  const showEditor  = S.view === "editor"  || S.view === "split";
+
+  return `
+  <div id="workspace">
+    <div class="workspace-toolbar">
+      <div class="toolbar-breadcrumb">
+        <span class="breadcrumb-dot" style="background:${color}"></span>
+        <span class="breadcrumb-dept">${dept?.label}</span>
+        <span style="color:var(--text3)">›</span>
+        <span class="breadcrumb-page">${escHtml(pg.title)}</span>
+      </div>
+      <div class="toolbar-actions">
+        ${[
+          { k:"preview", lbl:"👁 Vista previa" },
+          { k:"split",   lbl:"◫ Dividida" },
+          { k:"editor",  lbl:"</> Editor" },
+        ].map(({k,lbl}) => `
+          <button class="view-btn ${S.view===k?"active":""}" data-view="${k}"
+            style="${S.view===k?`border-color:${color};background:${color}18;color:${color}`:""}">${lbl}</button>
+        `).join("")}
+        <button class="btn-open" id="btn-open">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          Abrir
+        </button>
+      </div>
+    </div>
+    <div class="panels">
+      ${showPreview ? `
+        <div class="panel-preview">
+          <div class="panel-bar preview" style="background:${color}">
+            <span>👁 PREVISUALIZACIÓN EN VIVO</span>
+            <span style="opacity:.6;font-size:10px">${escHtml(pg.title)}</span>
+          </div>
+          <iframe class="preview-frame" sandbox="allow-scripts allow-forms allow-same-origin" title="preview"></iframe>
+        </div>
+      ` : ""}
+      ${S.view === "split" ? `<div class="panel-divider"></div>` : ""}
+      ${showEditor ? `
+        <div class="panel-editor">
+          <div class="panel-bar editor">
+            <span>&lt;/&gt; EDITOR HTML</span>
+            <span id="char-count">${pg.content?.length||0} caracteres</span>
+          </div>
+          <textarea class="code-editor" id="code-editor" spellcheck="false">${escHtml(pg.content||"")}</textarea>
+        </div>
+      ` : ""}
+    </div>
+  </div>`;
+}
+
+function renderEmpty(dept) {
+  const color = dept?.color || "#0D1E8D";
+  return `
+  <div id="workspace" style="flex:1">
+    <div class="empty-dept">
+      <div class="empty-icon" style="background:${color}18">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.5">
+          <path d="${dept?.iconPath||'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'}"/>
+        </svg>
+      </div>
+      <p class="empty-title">${dept?.label || "Departamento"}</p>
+      <p class="empty-sub">Crea tu primera landing page para comenzar a gestionar contenido de esta área.</p>
+      <button class="btn-empty-add" id="btn-new-page"
+        style="border-color:${color};color:${color}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Crear primera página
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderStatusBar() {
+  return `
+  <div id="status-bar">
+    <span><span class="status-dot"></span>${S.user.email}</span>
+    <span>Doble clic en un nombre para renombrarlo</span>
+    <span class="status-right">boletaenlinea.co — Portal Corporativo Interno</span>
+  </div>`;
+}
+
+function renderDeleteModal() {
+  return `
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <p class="modal-title">¿Eliminar página?</p>
+      <p class="modal-body">Se eliminará permanentemente <strong>"${escHtml(S.delTarget.title)}"</strong>. Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="btn-modal-cancel">Cancelar</button>
+        <button class="btn-modal-del" id="btn-modal-del">Eliminar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── EVENT BINDING ──
+function bindPortal() {
+  // Header
+  document.getElementById("btn-save")?.addEventListener("click", savePages);
+  document.getElementById("btn-logout")?.addEventListener("click", logout);
+
+  // Dept tabs
+  document.querySelectorAll(".dept-tab").forEach(btn => {
+    btn.addEventListener("click", () => setDept(btn.dataset.dept));
+  });
+
+  // Page items
+  document.querySelectorAll(".page-item").forEach(item => {
+    item.addEventListener("click", () => {
+      if (S.renaming) return;
+      setPage(item.dataset.pid);
+    });
+    item.addEventListener("dblclick", () => {
+      const p = currentPages().find(x => x.id === item.dataset.pid);
+      if (p) { S.renaming = p.id; S.renVal = p.title; render(); bindPortal(); focusRename(); }
+    });
+  });
+
+  // Delete buttons on page items
+  document.querySelectorAll(".page-del").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      const p = currentPages().find(x => x.id === btn.dataset.del);
+      if (p) { S.delTarget = p; render(); bindPortal(); }
+    });
+  });
+
+  // Rename input
+  const ri = document.getElementById("rename-input");
+  if (ri) {
+    ri.focus(); ri.select();
+    ri.addEventListener("keydown", e => {
+      if (e.key === "Enter") { S.renVal = ri.value; applyRename(); }
+      if (e.key === "Escape") { S.renaming = null; render(); bindPortal(); }
+    });
+    ri.addEventListener("blur", () => { S.renVal = ri.value; applyRename(); });
+    ri.addEventListener("input", e => { S.renVal = e.target.value; });
+  }
+
+  // Add page
+  document.getElementById("btn-new-page")?.addEventListener("click", () => {
+    S.addOpen = true; render(); bindPortal();
+    document.getElementById("add-input")?.focus();
+  });
+  const ai = document.getElementById("add-input");
+  if (ai) {
+    ai.addEventListener("input", e => { S.newTitle = e.target.value; });
+    ai.addEventListener("keydown", e => {
+      if (e.key === "Enter") { S.newTitle = ai.value; addPage(); }
+      if (e.key === "Escape") { S.addOpen = false; S.newTitle = ""; render(); bindPortal(); }
+    });
+  }
+  document.getElementById("btn-create")?.addEventListener("click", () => {
+    const ai2 = document.getElementById("add-input");
+    if (ai2) S.newTitle = ai2.value;
+    addPage();
+  });
+  document.getElementById("btn-cancel-add")?.addEventListener("click", () => {
+    S.addOpen = false; S.newTitle = ""; render(); bindPortal();
+  });
+
+  // View buttons
+  document.querySelectorAll(".view-btn").forEach(btn => {
+    btn.addEventListener("click", () => setView(btn.dataset.view));
+  });
+
+  // Open in tab
+  document.getElementById("btn-open")?.addEventListener("click", openInTab);
+
+  // Code editor
+  const ed = document.getElementById("code-editor");
+  if (ed) {
+    ed.addEventListener("input", () => {
+      updateContent(ed.value);
+      const cc = document.getElementById("char-count");
+      if (cc) cc.textContent = ed.value.length + " caracteres";
+    });
+    ed.addEventListener("keydown", e => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const s = ed.selectionStart, end = ed.selectionEnd;
+        ed.value = ed.value.substring(0,s) + "  " + ed.value.substring(end);
+        ed.selectionStart = ed.selectionEnd = s + 2;
+        updateContent(ed.value);
+      }
+    });
+  }
+
+  // Delete modal
+  document.getElementById("btn-modal-cancel")?.addEventListener("click", () => {
+    S.delTarget = null; render(); bindPortal();
+  });
+  document.getElementById("btn-modal-del")?.addEventListener("click", () => {
+    deletePage(S.delTarget.id);
+  });
+  document.getElementById("modal-overlay")?.addEventListener("click", e => {
+    if (e.target.id === "modal-overlay") { S.delTarget = null; render(); bindPortal(); }
+  });
+}
+
+function focusRename() {
+  const ri = document.getElementById("rename-input");
+  if (ri) { ri.focus(); ri.select(); }
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function escHtml(str) {
+  return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ══════════════════════════════════════════════
+//  TEMPLATES HTML POR DEPARTAMENTO
+// ══════════════════════════════════════════════
+function templateBlank(title, dept, color) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f7f9ff; color: #222; }
+  header { background: ${color}; color: #fff; padding: 40px; }
+  .logo-tag { font-size: 11px; opacity: .6; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  h1 { font-size: 1.8rem; font-weight: 800; }
+  .sub { opacity: .75; margin-top: 8px; font-size: .95rem; }
+  .wrap { padding: 40px; max-width: 960px; margin: 0 auto; }
+  .card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 20px; border: 1px solid #e8edf8; }
+  h2 { font-size: 1.1rem; font-weight: 700; color: ${color}; margin-bottom: 12px; }
+  p { color: #555; line-height: 1.7; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo-tag">Boletaenlinea · ${dept}</div>
+    <h1>${title}</h1>
+    <p class="sub">Edita este HTML desde el portal para personalizar esta landing page.</p>
+  </header>
+  <div class="wrap">
+    <div class="card">
+      <h2>Descripción</h2>
+      <p>Agrega aquí el contenido principal de esta página. Puedes usar HTML, CSS y JavaScript directamente.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+function genPageContabilidad1() {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liquidacion de Eventos</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#F3F6FF;color:#222}
+header{background:#1565C0;color:#fff;padding:36px 40px}
+.logo-tag{font-size:10px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+h1{font-size:1.7rem;font-weight:800}
+.sub{opacity:.75;margin-top:6px;font-size:.88rem}
+.wrap{padding:28px 36px;max-width:1060px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat{background:#fff;border-radius:11px;padding:18px 20px;border-bottom:4px solid #1565C0;border:1px solid #dde8f8;border-bottom:4px solid #1565C0}
+.stat .n{font-size:1.7rem;font-weight:900;color:#1565C0}
+.stat .l{font-size:.75rem;color:#888;margin-top:3px}
+.card{background:#fff;border-radius:12px;padding:24px;margin-bottom:18px;border:1px solid #dde8f8}
+.card-title{font-size:.95rem;font-weight:700;color:#1565C0;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eef2ff;display:flex;align-items:center;justify-content:space-between}
+.btn-open-form{display:flex;align-items:center;gap:6px;padding:8px 18px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-open-form:hover{background:#0d47a1}
+.btn-open-form.cancel{background:#fff;color:#1565C0;border:1.5px solid #1565C0}
+.btn-open-form.cancel:hover{background:#EEF2FF}
+.form-box{background:#F0F4FF;border-radius:12px;padding:24px;margin-bottom:18px;border:1.5px solid #c5d5f0;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:11px;font-weight:700;color:#1565C0;text-transform:uppercase;letter-spacing:.06em}
+.form-group input,.form-group select{padding:9px 12px;border-radius:8px;border:1.5px solid #c5d5f0;font-size:13px;font-family:inherit;color:#222;outline:none;background:#fff;transition:border-color .15s}
+.form-group input:focus,.form-group select:focus{border-color:#1565C0}
+.form-group input[type=number]{text-align:right}
+.form-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn-submit{padding:9px 24px;background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-submit:hover{background:#0d47a1}
+.btn-reset{padding:9px 16px;background:transparent;color:#666;border:1px solid #ccd;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{background:#EEF2FF;color:#1565C0;font-weight:700;padding:9px 12px;text-align:left;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #f0f4fb;color:#333;vertical-align:middle}
+tr:hover td{background:#f7f9ff}
+.badge-ok{background:#E8F5E9;color:#2E7D32;padding:3px 11px;border-radius:20px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.badge-pend{background:#FFF8E1;color:#F57F17;padding:3px 11px;border-radius:20px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.badge-rev{background:#EDE7F6;color:#4527A0;padding:3px 11px;border-radius:20px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.btn-del{padding:3px 8px;background:none;border:none;color:#ccc;cursor:pointer;border-radius:5px;font-size:15px;line-height:1;transition:color .15s}
+.btn-del:hover{color:#E53935}
+.empty-msg{text-align:center;padding:36px;color:#aab;font-size:.9rem}
+.total-row td{font-weight:700;color:#1565C0;background:#EEF2FF}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-tag">Boletaenlinea &middot; Contabilidad</div>
+  <h1>Liquidacion de Eventos</h1>
+  <p class="sub">Panel de control contable &mdash; registro y seguimiento</p>
+</header>
+
+<div class="wrap">
+  <div class="stats" id="stats-box">
+    <div class="stat"><div class="n" id="st-total">0</div><div class="l">Total eventos</div></div>
+    <div class="stat"><div class="n" id="st-recaudado">$0</div><div class="l">Total recaudado</div></div>
+    <div class="stat"><div class="n" id="st-liquidados">0</div><div class="l">Liquidados</div></div>
+    <div class="stat"><div class="n" id="st-pendientes">0</div><div class="l">Pendientes</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span>Registro de Eventos</span>
+      <button class="btn-open-form" id="btn-toggle-form" onclick="toggleForm()">
+        <span id="btn-form-txt">+ Cargar nuevo evento</span>
+      </button>
+    </div>
+
+    <div id="form-container" style="display:none">
+      <div class="form-box">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre del evento *</label>
+            <input id="f-nombre" type="text" placeholder="Ej: Concierto Jazz Cali" required>
+          </div>
+          <div class="form-group">
+            <label>Empresario / Promotor *</label>
+            <input id="f-empresario" type="text" placeholder="Nombre del empresario">
+          </div>
+        </div>
+        <div class="form-grid three">
+          <div class="form-group">
+            <label>Fecha del evento *</label>
+            <input id="f-fecha" type="date" required>
+          </div>
+          <div class="form-group">
+            <label>Ciudad *</label>
+            <input id="f-ciudad" type="text" placeholder="Ej: Cali">
+          </div>
+          <div class="form-group">
+            <label>Recinto / Lugar</label>
+            <input id="f-recinto" type="text" placeholder="Ej: Teatro Municipal">
+          </div>
+        </div>
+        <div class="form-grid three">
+          <div class="form-group">
+            <label>Boletas vendidas *</label>
+            <input id="f-boletas" type="number" min="0" placeholder="0" oninput="calcularTotal()">
+          </div>
+          <div class="form-group">
+            <label>Valor por boleta ($) *</label>
+            <input id="f-valor" type="number" min="0" placeholder="0" oninput="calcularTotal()">
+          </div>
+          <div class="form-group">
+            <label>Total calculado</label>
+            <input id="f-total" type="text" placeholder="$0" readonly style="background:#EEF2FF;font-weight:700;color:#1565C0">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Numero de contrato</label>
+            <input id="f-contrato" type="text" placeholder="Ej: BEL-2026-042">
+          </div>
+          <div class="form-group">
+            <label>Estado *</label>
+            <select id="f-estado">
+              <option value="Pendiente">Pendiente</option>
+              <option value="En revision">En revision</option>
+              <option value="Liquidado">Liquidado</option>
+            </select>
+          </div>
+        </div>
+        <div id="form-error" style="display:none;color:#E53935;font-size:12.5px;margin-bottom:10px;padding:8px 12px;background:#FFEBEE;border-radius:7px"></div>
+        <div class="form-actions">
+          <button class="btn-reset" onclick="resetForm()">Limpiar</button>
+          <button class="btn-submit" onclick="guardarEvento()">Guardar evento</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Evento</th>
+            <th>Empresario</th>
+            <th>Fecha</th>
+            <th>Ciudad</th>
+            <th>Boletas</th>
+            <th>Total recaudado</th>
+            <th>Contrato</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tabla-body"></tbody>
+        <tfoot id="tabla-foot"></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY = 'bel_liq_eventos_v1';
+var formAbierto = false;
+
+function cargar() {
+  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { return []; }
+}
+function guardar(data) {
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+
+function fmt(n) {
+  if (!n && n !== 0) return '$0';
+  return '$' + Number(n).toLocaleString('es-CO');
+}
+function fmtFecha(f) {
+  if (!f) return '';
+  var p = f.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function calcularTotal() {
+  var b = parseFloat(document.getElementById('f-boletas').value) || 0;
+  var v = parseFloat(document.getElementById('f-valor').value) || 0;
+  document.getElementById('f-total').value = fmt(b * v);
+}
+
+function toggleForm() {
+  formAbierto = !formAbierto;
+  document.getElementById('form-container').style.display = formAbierto ? 'block' : 'none';
+  var btn = document.getElementById('btn-toggle-form');
+  var txt = document.getElementById('btn-form-txt');
+  if (formAbierto) {
+    btn.classList.add('cancel');
+    txt.textContent = 'x Cerrar formulario';
+  } else {
+    btn.classList.remove('cancel');
+    txt.textContent = '+ Cargar nuevo evento';
+    resetForm();
+  }
+}
+
+function resetForm() {
+  ['f-nombre','f-empresario','f-fecha','f-ciudad','f-recinto','f-boletas','f-valor','f-contrato'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-estado').value = 'Pendiente';
+  document.getElementById('f-total').value = '';
+  document.getElementById('form-error').style.display = 'none';
+}
+
+function guardarEvento() {
+  var nombre = document.getElementById('f-nombre').value.trim();
+  var fecha = document.getElementById('f-fecha').value;
+  var boletas = document.getElementById('f-boletas').value;
+  var valor = document.getElementById('f-valor').value;
+  var errEl = document.getElementById('form-error');
+
+  if (!nombre || !fecha || !boletas || !valor) {
+    errEl.textContent = 'Por favor completa los campos obligatorios marcados con *.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var eventos = cargar();
+  eventos.push({
+    id: Date.now(),
+    nombre: nombre,
+    empresario: document.getElementById('f-empresario').value.trim(),
+    fecha: fecha,
+    ciudad: document.getElementById('f-ciudad').value.trim(),
+    recinto: document.getElementById('f-recinto').value.trim(),
+    boletas: parseInt(boletas),
+    valor: parseFloat(valor),
+    total: parseInt(boletas) * parseFloat(valor),
+    contrato: document.getElementById('f-contrato').value.trim(),
+    estado: document.getElementById('f-estado').value
+  });
+
+  guardar(eventos);
+  resetForm();
+  toggleForm();
+  renderTabla();
+  renderStats();
+}
+
+function eliminarEvento(id) {
+  if (!confirm('Eliminar este evento del registro?')) return;
+  var eventos = cargar().filter(function(e) { return e.id !== id; });
+  guardar(eventos);
+  renderTabla();
+  renderStats();
+}
+
+function renderTabla() {
+  var eventos = cargar();
+  var tbody = document.getElementById('tabla-body');
+  var tfoot = document.getElementById('tabla-foot');
+
+  if (eventos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="10" class="empty-msg">No hay eventos cargados aun. Usa el formulario para agregar el primero.</td></tr>';
+    tfoot.innerHTML = '';
+    return;
+  }
+
+  var totalBoletas = 0, totalRecaudado = 0;
+  tbody.innerHTML = eventos.map(function(ev, i) {
+    totalBoletas += ev.boletas || 0;
+    totalRecaudado += ev.total || 0;
+    var badge = ev.estado === 'Liquidado'
+      ? '<span class="badge-ok">Liquidado</span>'
+      : ev.estado === 'En revision'
+        ? '<span class="badge-rev">En revision</span>'
+        : '<span class="badge-pend">Pendiente</span>';
+    return '<tr>' +
+      '<td style="color:#aab;font-size:.8rem">' + (i+1) + '</td>' +
+      '<td><strong>' + ev.nombre + '</strong>' + (ev.recinto ? '<br><span style="font-size:.78rem;color:#888">' + ev.recinto + '</span>' : '') + '</td>' +
+      '<td>' + (ev.empresario || '—') + '</td>' +
+      '<td style="white-space:nowrap">' + fmtFecha(ev.fecha) + '</td>' +
+      '<td>' + (ev.ciudad || '—') + '</td>' +
+      '<td style="text-align:right">' + (ev.boletas || 0).toLocaleString('es-CO') + '</td>' +
+      '<td style="text-align:right;font-weight:700;color:#1565C0">' + fmt(ev.total) + '</td>' +
+      '<td style="font-size:.8rem;color:#888">' + (ev.contrato || '—') + '</td>' +
+      '<td>' + badge + '</td>' +
+      '<td><button class="btn-del" onclick="eliminarEvento(' + ev.id + ')" title="Eliminar">&#10005;</button></td>' +
+      '</tr>';
+  }).join('');
+
+  tfoot.innerHTML = '<tr class="total-row">' +
+    '<td colspan="5" style="text-align:right">TOTALES</td>' +
+    '<td style="text-align:right">' + totalBoletas.toLocaleString('es-CO') + '</td>' +
+    '<td style="text-align:right">' + fmt(totalRecaudado) + '</td>' +
+    '<td colspan="3"></td>' +
+    '</tr>';
+}
+
+function renderStats() {
+  var eventos = cargar();
+  var totalRec = eventos.reduce(function(s,e){ return s + (e.total||0); }, 0);
+  var liquidados = eventos.filter(function(e){ return e.estado === 'Liquidado'; }).length;
+  var pendientes = eventos.filter(function(e){ return e.estado !== 'Liquidado'; }).length;
+  document.getElementById('st-total').textContent = eventos.length;
+  document.getElementById('st-recaudado').textContent = totalRec >= 1000000
+    ? '$' + (totalRec/1000000).toFixed(1) + 'M'
+    : fmt(totalRec);
+  document.getElementById('st-liquidados').textContent = liquidados;
+  document.getElementById('st-pendientes').textContent = pendientes;
+}
+
+renderTabla();
+renderStats();
+</script>
+</body>
+</html>`;
+}
+
+function genPageContabilidad2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Informe de Gastos</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F3F6FF}header{background:#1565C0;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:900px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #e0e8f8}h3{font-size:1rem;font-weight:700;color:#1565C0;margin-bottom:14px}.item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f4fb;font-size:.9rem}.item .cat{color:#555;display:flex;align-items:center;gap:10px}.item .val{font-weight:700;color:#1565C0}.total{background:#EEF2FF;border-radius:12px;padding:18px 22px;display:flex;justify-content:space-between;font-weight:900;font-size:1.1rem;color:#1565C0}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Contabilidad</div><h1>Informe de Gastos</h1><p class="sub">Consolidado Mayo 2026</p></header>
+<div class="wrap"><div class="card"><h3>Desglose por categoría</h3>
+<div class="item"><span class="cat">🏢 Plataforma tecnológica</span><span class="val">$4.200.000</span></div>
+<div class="item"><span class="cat">📢 Marketing y publicidad</span><span class="val">$2.800.000</span></div>
+<div class="item"><span class="cat">👥 Nómina operativa</span><span class="val">$8.500.000</span></div>
+<div class="item"><span class="cat">🔧 Logística y operaciones</span><span class="val">$1.600.000</span></div>
+<div class="item"><span class="cat">📋 Gastos administrativos</span><span class="val">$900.000</span></div>
+</div><div class="total"><span>Total Gastos Mayo 2026</span><span>$18.000.000</span></div></div></body></html>`;
+}
+
+function genPageOperaciones1() {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eventos Activos</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#F1F8F2;color:#222}
+header{background:#2E7D32;color:#fff;padding:36px 40px}
+.logo-tag{font-size:10px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+h1{font-size:1.7rem;font-weight:800}
+.sub{opacity:.75;margin-top:6px;font-size:.88rem}
+.wrap{padding:28px 36px;max-width:1040px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat{background:#fff;border-radius:11px;padding:18px 20px;border-bottom:4px solid #2E7D32;border:1px solid #c8e6c9;border-bottom:4px solid #2E7D32}
+.stat .n{font-size:1.7rem;font-weight:900;color:#2E7D32}
+.stat .l{font-size:.75rem;color:#888;margin-top:3px}
+.card{background:#fff;border-radius:12px;padding:24px;margin-bottom:18px;border:1px solid #c8e6c9}
+.card-title{font-size:.95rem;font-weight:700;color:#2E7D32;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e8f5e9;display:flex;align-items:center;justify-content:space-between}
+.btn-open-form{display:flex;align-items:center;gap:6px;padding:8px 18px;background:#2E7D32;color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-open-form:hover{background:#1B5E20}
+.btn-open-form.cancel{background:#fff;color:#2E7D32;border:1.5px solid #2E7D32}
+.btn-open-form.cancel:hover{background:#E8F5E9}
+.form-box{background:#F1F8F2;border-radius:12px;padding:24px;margin-bottom:18px;border:1.5px solid #a5d6a7;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:11px;font-weight:700;color:#2E7D32;text-transform:uppercase;letter-spacing:.06em}
+.form-group input,.form-group select{padding:9px 12px;border-radius:8px;border:1.5px solid #a5d6a7;font-size:13px;font-family:inherit;color:#222;outline:none;background:#fff;transition:border-color .15s}
+.form-group input:focus,.form-group select:focus{border-color:#2E7D32}
+.pct-display{padding:9px 12px;border-radius:8px;background:#E8F5E9;border:1.5px solid #a5d6a7;font-size:13px;font-weight:700;color:#2E7D32}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.btn-submit{padding:9px 24px;background:#2E7D32;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-submit:hover{background:#1B5E20}
+.btn-reset{padding:9px 16px;background:transparent;color:#666;border:1px solid #ccd;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+.evento{background:#fff;border-radius:12px;padding:20px 22px;margin-bottom:12px;border:1px solid #c8e6c9;border-left:5px solid #2E7D32;display:flex;align-items:flex-start;gap:18px;transition:box-shadow .15s}
+.evento:hover{box-shadow:0 4px 16px rgba(46,125,50,.1)}
+.ev-icon{width:44px;height:44px;border-radius:10px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.ev-body{flex:1;min-width:0}
+.ev-body h3{font-size:1rem;font-weight:700;color:#1B5E20;margin-bottom:3px}
+.ev-body .ev-meta{font-size:.82rem;color:#555;line-height:1.7;margin-bottom:8px}
+.ev-body .ev-meta b{color:#333}
+.bar-wrap{display:flex;align-items:center;gap:10px}
+.bar-track{flex:1;background:#e0e0e0;height:8px;border-radius:10px;overflow:hidden}
+.bar-fill{height:8px;border-radius:10px;transition:width .3s}
+.bar-pct{font-size:.8rem;font-weight:700;min-width:36px}
+.ev-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.badge{padding:5px 13px;border-radius:20px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.badge-activo{background:#E8F5E9;color:#2E7D32}
+.badge-proximo{background:#E3F2FD;color:#1565C0}
+.badge-sold{background:#FCE4EC;color:#C62828}
+.badge-pausado{background:#FFF8E1;color:#F57F17}
+.btn-del-ev{padding:4px 9px;background:none;border:1px solid #ffcdd2;border-radius:6px;color:#ef9a9a;cursor:pointer;font-size:11.5px;transition:all .15s;font-family:inherit}
+.btn-del-ev:hover{background:#ffebee;color:#C62828;border-color:#C62828}
+.empty-msg{text-align:center;padding:40px;color:#aab;font-size:.9rem}
+.form-error{display:none;color:#E53935;font-size:12.5px;margin-bottom:10px;padding:8px 12px;background:#FFEBEE;border-radius:7px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-tag">Boletaenlinea &middot; Operaciones</div>
+  <h1>Eventos Activos</h1>
+  <p class="sub">Cartelera operativa &mdash; seguimiento en tiempo real</p>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="n" id="st-total">0</div><div class="l">Total eventos</div></div>
+    <div class="stat"><div class="n" id="st-activos">0</div><div class="l">Activos</div></div>
+    <div class="stat"><div class="n" id="st-sold">0</div><div class="l">Sold Out</div></div>
+    <div class="stat"><div class="n" id="st-boletas">0</div><div class="l">Boletas vendidas</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span>Cartelera de Eventos</span>
+      <button class="btn-open-form" id="btn-toggle-form" onclick="toggleForm()">
+        <span id="btn-form-txt">+ Cargar nuevo evento</span>
+      </button>
+    </div>
+
+    <div id="form-container" style="display:none">
+      <div class="form-box">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre del evento *</label>
+            <input id="f-nombre" type="text" placeholder="Ej: El Puma - Gracias Tour" required>
+          </div>
+          <div class="form-group">
+            <label>Artista / Acto principal</label>
+            <input id="f-artista" type="text" placeholder="Nombre del artista">
+          </div>
+        </div>
+        <div class="form-grid three">
+          <div class="form-group">
+            <label>Fecha del evento *</label>
+            <input id="f-fecha" type="date" required>
+          </div>
+          <div class="form-group">
+            <label>Ciudad *</label>
+            <input id="f-ciudad" type="text" placeholder="Ej: Cali">
+          </div>
+          <div class="form-group">
+            <label>Recinto / Lugar</label>
+            <input id="f-recinto" type="text" placeholder="Ej: Movistar Arena">
+          </div>
+        </div>
+        <div class="form-grid three">
+          <div class="form-group">
+            <label>Capacidad total *</label>
+            <input id="f-capacidad" type="number" min="1" placeholder="0" oninput="calcPct()" required>
+          </div>
+          <div class="form-group">
+            <label>Boletas vendidas *</label>
+            <input id="f-vendidas" type="number" min="0" placeholder="0" oninput="calcPct()" required>
+          </div>
+          <div class="form-group">
+            <label>Ocupacion</label>
+            <div class="pct-display" id="f-pct">0%</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Estado *</label>
+            <select id="f-estado">
+              <option value="Activo">Activo</option>
+              <option value="Proximo">Proximo</option>
+              <option value="Sold Out">Sold Out</option>
+              <option value="Pausado">Pausado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notas adicionales</label>
+            <input id="f-notas" type="text" placeholder="Ej: Se requiere personal extra">
+          </div>
+        </div>
+        <div class="form-error" id="form-error"></div>
+        <div class="form-actions">
+          <button class="btn-reset" onclick="resetForm()">Limpiar</button>
+          <button class="btn-submit" onclick="guardarEvento()">Guardar evento</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="eventos-container"></div>
+  </div>
+</div>
+
+<script>
+var KEY = 'bel_oper_eventos_v1';
+var formAbierto = false;
+
+function cargar() {
+  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { return []; }
+}
+function guardar(data) { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+function fmtFecha(f) {
+  if (!f) return '';
+  var p = f.split('-'); return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function calcPct() {
+  var cap = parseFloat(document.getElementById('f-capacidad').value) || 0;
+  var vend = parseFloat(document.getElementById('f-vendidas').value) || 0;
+  var pct = cap > 0 ? Math.round((vend / cap) * 100) : 0;
+  if (pct > 100) pct = 100;
+  document.getElementById('f-pct').textContent = pct + '%';
+}
+
+function toggleForm() {
+  formAbierto = !formAbierto;
+  document.getElementById('form-container').style.display = formAbierto ? 'block' : 'none';
+  var btn = document.getElementById('btn-toggle-form');
+  var txt = document.getElementById('btn-form-txt');
+  if (formAbierto) {
+    btn.classList.add('cancel');
+    txt.textContent = 'x Cerrar formulario';
+  } else {
+    btn.classList.remove('cancel');
+    txt.textContent = '+ Cargar nuevo evento';
+    resetForm();
+  }
+}
+
+function resetForm() {
+  ['f-nombre','f-artista','f-fecha','f-ciudad','f-recinto','f-capacidad','f-vendidas','f-notas'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-estado').value = 'Activo';
+  document.getElementById('f-pct').textContent = '0%';
+  document.getElementById('form-error').style.display = 'none';
+}
+
+function guardarEvento() {
+  var nombre = document.getElementById('f-nombre').value.trim();
+  var fecha = document.getElementById('f-fecha').value;
+  var capacidad = parseInt(document.getElementById('f-capacidad').value);
+  var vendidas = parseInt(document.getElementById('f-vendidas').value);
+  var errEl = document.getElementById('form-error');
+
+  if (!nombre || !fecha || !capacidad || isNaN(vendidas)) {
+    errEl.textContent = 'Por favor completa los campos obligatorios marcados con *.';
+    errEl.style.display = 'block'; return;
+  }
+  if (vendidas > capacidad) {
+    errEl.textContent = 'Las boletas vendidas no pueden superar la capacidad total.';
+    errEl.style.display = 'block'; return;
+  }
+  errEl.style.display = 'none';
+
+  var pct = Math.round((vendidas / capacidad) * 100);
+  var eventos = cargar();
+  eventos.unshift({
+    id: Date.now(),
+    nombre: nombre,
+    artista: document.getElementById('f-artista').value.trim(),
+    fecha: fecha,
+    ciudad: document.getElementById('f-ciudad').value.trim(),
+    recinto: document.getElementById('f-recinto').value.trim(),
+    capacidad: capacidad,
+    vendidas: vendidas,
+    pct: pct,
+    estado: document.getElementById('f-estado').value,
+    notas: document.getElementById('f-notas').value.trim()
+  });
+
+  guardar(eventos);
+  resetForm();
+  toggleForm();
+  renderEventos();
+  renderStats();
+}
+
+function eliminarEvento(id) {
+  if (!confirm('Eliminar este evento de la cartelera?')) return;
+  guardar(cargar().filter(function(e){ return e.id !== id; }));
+  renderEventos(); renderStats();
+}
+
+function badgeHtml(estado) {
+  var map = {
+    'Activo': 'badge-activo',
+    'Proximo': 'badge-proximo',
+    'Sold Out': 'badge-sold',
+    'Pausado': 'badge-pausado'
+  };
+  return '<span class="badge ' + (map[estado] || 'badge-activo') + '">' + estado + '</span>';
+}
+
+function barColor(pct, estado) {
+  if (estado === 'Sold Out') return '#C62828';
+  if (pct >= 80) return '#2E7D32';
+  if (pct >= 50) return '#F57F17';
+  return '#1565C0';
+}
+
+function iconEvento(nombre) {
+  var n = (nombre || '').toLowerCase();
+  if (n.indexOf('infantil') >= 0 || n.indexOf('nino') >= 0) return '🧸';
+  if (n.indexOf('jazz') >= 0 || n.indexOf('musica') >= 0) return '🎷';
+  if (n.indexOf('comedia') >= 0 || n.indexOf('humor') >= 0 || n.indexOf('romantico') >= 0) return '😂';
+  if (n.indexOf('concierto') >= 0 || n.indexOf('tour') >= 0) return '🎤';
+  if (n.indexOf('teatro') >= 0 || n.indexOf('obra') >= 0) return '🎭';
+  if (n.indexOf('festival') >= 0) return '🎪';
+  if (n.indexOf('rock') >= 0) return '🎸';
+  return '🎟';
+}
+
+function renderEventos() {
+  var eventos = cargar();
+  var cont = document.getElementById('eventos-container');
+  if (eventos.length === 0) {
+    cont.innerHTML = '<div class="empty-msg">No hay eventos cargados aun. Usa el formulario para agregar el primero.</div>';
+    return;
+  }
+  cont.innerHTML = eventos.map(function(ev) {
+    var color = barColor(ev.pct, ev.estado);
+    var meta = [];
+    if (ev.artista) meta.push('<b>' + ev.artista + '</b>');
+    if (ev.ciudad) meta.push('📍 ' + ev.ciudad);
+    if (ev.recinto) meta.push(ev.recinto);
+    if (ev.fecha) meta.push('📅 ' + fmtFecha(ev.fecha));
+    if (ev.notas) meta.push('<span style="color:#888;font-style:italic">' + ev.notas + '</span>');
+    return '<div class="evento">' +
+      '<div class="ev-icon">' + iconEvento(ev.nombre) + '</div>' +
+      '<div class="ev-body">' +
+        '<h3>' + ev.nombre + '</h3>' +
+        '<p class="ev-meta">' + meta.join(' &nbsp;&middot;&nbsp; ') + '</p>' +
+        '<div class="bar-wrap">' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + ev.pct + '%;background:' + color + '"></div></div>' +
+          '<span class="bar-pct" style="color:' + color + '">' + ev.pct + '%</span>' +
+          '<span style="font-size:.78rem;color:#888">' + (ev.vendidas||0).toLocaleString('es-CO') + ' / ' + (ev.capacidad||0).toLocaleString('es-CO') + ' boletas</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ev-right">' +
+        badgeHtml(ev.estado) +
+        '<button class="btn-del-ev" onclick="eliminarEvento(' + ev.id + ')">Eliminar</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function renderStats() {
+  var ev = cargar();
+  var totalBoletas = ev.reduce(function(s,e){ return s + (e.vendidas||0); }, 0);
+  var activos = ev.filter(function(e){ return e.estado === 'Activo'; }).length;
+  var sold = ev.filter(function(e){ return e.estado === 'Sold Out'; }).length;
+  document.getElementById('st-total').textContent = ev.length;
+  document.getElementById('st-activos').textContent = activos;
+  document.getElementById('st-sold').textContent = sold;
+  document.getElementById('st-boletas').textContent = totalBoletas >= 1000
+    ? (totalBoletas/1000).toFixed(1) + 'K'
+    : totalBoletas;
+}
+
+renderEventos();
+renderStats();
+</script>
+</body>
+</html>`;
+}
+
+function genPageOperaciones2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Protocolo de Operación</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F1F8F2}header{background:#2E7D32;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:900px;margin:0 auto}.step{display:flex;gap:16px;margin-bottom:20px;background:#fff;border-radius:12px;padding:22px;border:1px solid #d4edda}.num{width:36px;height:36px;border-radius:50%;background:#2E7D32;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;flex-shrink:0}.step-content h3{font-size:.95rem;font-weight:700;color:#1B5E20;margin-bottom:6px}.step-content p{font-size:.88rem;color:#555;line-height:1.6}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Operaciones</div><h1>Protocolo de Operación</h1><p class="sub">Guía paso a paso para la gestión de eventos</p></header>
+<div class="wrap">
+<div class="step"><div class="num">1</div><div class="step-content"><h3>Registro del evento</h3><p>El empresario envía la ficha técnica del evento. Se verifica capacidad, artista, fecha y lugar. Se firma el contrato de boletería.</p></div></div>
+<div class="step"><div class="num">2</div><div class="step-content"><h3>Carga en plataforma</h3><p>El equipo técnico crea el evento en boletaenlinea.co, configura sectores, precios y cupos. Se realiza prueba de compra antes de activar.</p></div></div>
+<div class="step"><div class="num">3</div><div class="step-content"><h3>Publicación y ventas</h3><p>Se activa la página del evento. Se coordina con Comunicaciones la publicación en redes sociales y envío de correos masivos.</p></div></div>
+<div class="step"><div class="num">4</div><div class="step-content"><h3>Día del evento</h3><p>Se despliega el equipo de control con Checkinera. Se monitorea el ingreso en tiempo real y se resuelven incidencias.</p></div></div>
+<div class="step"><div class="num">5</div><div class="step-content"><h3>Liquidación post-evento</h3><p>En las 48h siguientes se genera el informe de ventas y se entrega a Contabilidad para liquidación al empresario.</p></div></div>
+</div></body></html>`;
+}
+
+function genPageComunicaciones1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Kit de Marca Digital</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F8F0FF}header{background:#6A1B9A;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:960px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #ead6f8}h3{font-size:1rem;font-weight:700;color:#6A1B9A;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #f3e8fc}.chips{display:flex;gap:12px;flex-wrap:wrap}.chip{border-radius:10px;padding:18px 22px;min-width:130px;text-align:center}.chip .name{font-weight:800;font-size:.9rem}.chip .hex{font-size:.72rem;font-family:monospace;opacity:.75;margin-top:4px}.redes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.red{background:#F8F0FF;border-radius:10px;padding:14px;text-align:center}.red .ico{font-size:1.8rem;margin-bottom:6px}.font-box{background:#F8F0FF;border-radius:10px;padding:18px;margin-bottom:10px}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Comunicaciones</div><h1>Kit de Marca Digital</h1><p class="sub">Guía oficial de identidad visual corporativa</p></header>
+<div class="wrap">
+<div class="card"><h3>Paleta de Colores Oficial</h3><div class="chips">
+<div class="chip" style="background:#0D1E8D;color:#fff"><div class="name">Azul Principal</div><div class="hex">#0D1E8D</div></div>
+<div class="chip" style="background:#E8232A;color:#fff"><div class="name">Rojo Acento</div><div class="hex">#E8232A</div></div>
+<div class="chip" style="background:#091466;color:#fff"><div class="name">Azul Oscuro</div><div class="hex">#091466</div></div>
+<div class="chip" style="background:#EEF1FA;color:#0D1E8D;border:1px solid #c8d4f0"><div class="name">Fondo Claro</div><div class="hex">#EEF1FA</div></div>
+</div></div>
+<div class="card"><h3>Tipografía Corporativa</h3>
+<div class="font-box"><p style="font-size:2rem;font-weight:900;color:#0D1E8D;letter-spacing:-1px">Boletaenlinea</p><p style="font-size:.75rem;color:#888;margin-top:5px">Heading — Weight 900 — Segoe UI</p></div>
+<div class="font-box"><p style="font-size:.95rem;color:#444;line-height:1.7">Tu destino para eventos inolvidables. Boletos para conciertos, teatro, deportes y más. ¡Haz tus momentos especiales con nosotros! 🎟️</p><p style="font-size:.75rem;color:#888;margin-top:5px">Body — Weight 400 — Segoe UI</p></div>
+</div>
+<div class="card"><h3>Canales Digitales Oficiales</h3><div class="redes">
+<div class="red"><div class="ico">📘</div><strong>Facebook</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@Boletaenlinea</p></div>
+<div class="red"><div class="ico">📸</div><strong>Instagram</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@boletaenlinea</p></div>
+<div class="red"><div class="ico">🐦</div><strong>Twitter/X</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@boletaenlinea</p></div>
+<div class="red"><div class="ico">💬</div><strong>WhatsApp</strong><p style="font-size:.75rem;color:#666;margin-top:3px">+57 315 4237213</p></div>
+</div></div>
+</div></body></html>`;
+}
+
+function genPageComunicaciones2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Calendario Editorial</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F8F0FF}header{background:#6A1B9A;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:960px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #ead6f8}h3{font-size:1rem;font-weight:700;color:#6A1B9A;margin-bottom:14px}.post{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f5eeff}.post:last-child{border:none}.date{background:#6A1B9A;color:#fff;border-radius:8px;padding:6px 10px;text-align:center;min-width:54px;font-size:.82rem;font-weight:700}.canal{padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;white-space:nowrap}.ig{background:#fce4f8;color:#880e4f}.fb{background:#e3f0ff;color:#0d47a1}.wa{background:#e8f5e9;color:#1b5e20}.post-text{flex:1;font-size:.88rem;color:#444;line-height:1.4}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Comunicaciones</div><h1>Calendario Editorial</h1><p class="sub">Publicaciones programadas — Mayo 2026</p></header>
+<div class="wrap"><div class="card"><h3>Publicaciones de la semana</h3>
+<div class="post"><div class="date">14<br>May</div><span class="canal ig">Instagram</span><p class="post-text">Reels — Preventa El Puma Gracias Tour. Formato vertical 9:16. Copy: "¡Ya casi! Últimas boletas disponibles 🎟️"</p></div>
+<div class="post"><div class="date">15<br>May</div><span class="canal fb">Facebook</span><p class="post-text">Post informativo — Puntos de venta Cali y Bogotá. Incluir mapa interactivo y horarios de atención.</p></div>
+<div class="post"><div class="date">17<br>May</div><span class="canal wa">WhatsApp</span><p class="post-text">Envío masivo — Recordatorio evento Menopáusicas. Lista: 2.400 contactos segmentados Cali.</p></div>
+<div class="post"><div class="date">20<br>May</div><span class="canal ig">Instagram</span><p class="post-text">Stories — Countdown 5 días para Feos Pero Románticos. Sticker de cuenta regresiva + link en bio.</p></div>
+<div class="post"><div class="date">22<br>May</div><span class="canal fb">Facebook</span><p class="post-text">Live — Entrevista con artistas del Festival Infantil. Duración estimada: 20 minutos.</p></div>
+</div></div></body></html>`;
+}
+
+function genPageGerencia1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>KPIs Comerciales</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#FFF8F0}header{background:#E65100;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:1000px;margin:0 auto}.kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}.kpi{background:#fff;border-radius:12px;padding:24px;border-left:5px solid #E65100;border:1px solid #fde8d0;border-left:5px solid #E65100}.kpi .n{font-size:2.2rem;font-weight:900;color:#E65100}.kpi .l{font-size:.82rem;color:#777;margin-top:4px}.kpi .d{font-size:.82rem;color:#2E7D32;margin-top:8px;font-weight:700}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #fde8d0}h3{font-size:1rem;font-weight:700;color:#E65100;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #fdebd0}.br{display:flex;align-items:center;gap:12px;margin-bottom:11px}.brl{min-width:100px;font-size:.85rem;color:#555;font-weight:500}.brt{flex:1;background:#eee;border-radius:10px;height:10px}.brf{background:#E65100;height:10px;border-radius:10px}.brp{font-size:.82rem;color:#888;min-width:36px;text-align:right;font-weight:600}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Gerencia Comercial</div><h1>KPIs Comerciales</h1><p class="sub">Tablero de indicadores estratégicos — Mayo 2026</p></header>
+<div class="wrap">
+<div class="kgrid">
+<div class="kpi"><div class="n">+500K</div><div class="l">Boletas vendidas (histórico)</div><div class="d">▲ Meta 2026: 650.000 boletas</div></div>
+<div class="kpi"><div class="n">400+</div><div class="l">Eventos con sold out</div><div class="d">▲ +38 eventos vs 2025</div></div>
+<div class="kpi"><div class="n">$48.2M</div><div class="l">Facturación Mayo 2026</div><div class="d">▲ +12% vs abril 2026</div></div>
+<div class="kpi"><div class="n">98.2%</div><div class="l">Satisfacción del cliente</div><div class="d">▲ Meta: 97% — Superada ✓</div></div>
+</div>
+<div class="card"><h3>Cumplimiento de metas por canal — Mayo 2026</h3>
+<div class="br"><span class="brl">🌐 Web</span><div class="brt"><div class="brf" style="width:84%"></div></div><span class="brp">84%</span></div>
+<div class="br"><span class="brl">💬 WhatsApp</span><div class="brt"><div class="brf" style="width:71%"></div></div><span class="brp">71%</span></div>
+<div class="br"><span class="brl">🏪 Presencial</span><div class="brt"><div class="brf" style="width:60%"></div></div><span class="brp">60%</span></div>
+<div class="br"><span class="brl">📞 Telefónico</span><div class="brt"><div class="brf" style="width:45%"></div></div><span class="brp">45%</span></div>
+</div>
+</div></body></html>`;
+}
+
+function genPageGerencia2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Pipeline de Ventas</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#FFF8F0}header{background:#E65100;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:1000px;margin:0 auto}.pipe{display:flex;gap:12px;margin-bottom:28px;overflow-x:auto;padding-bottom:8px}.col{background:#fff;border-radius:12px;padding:16px;min-width:180px;flex:1;border:1px solid #fde8d0}.col-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid}.item{background:#fff8f4;border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid #fde8d0;font-size:.85rem}.item .name{font-weight:700;color:#444;margin-bottom:3px}.item .val{font-size:.8rem;color:#E65100;font-weight:700}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #fde8d0}h3{font-size:1rem;font-weight:700;color:#E65100;margin-bottom:14px}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Gerencia Comercial</div><h1>Pipeline de Ventas</h1><p class="sub">Estado actual de prospectos y negociaciones — Mayo 2026</p></header>
+<div class="wrap">
+<div class="pipe">
+<div class="col"><div class="col-title" style="color:#9E9E9E;border-color:#9E9E9E">Prospecto</div>
+<div class="item"><div class="name">Festival Rock Manizales</div><div class="val">est. $28M</div></div>
+<div class="item"><div class="name">Obra de Teatro Bogotá</div><div class="val">est. $8M</div></div></div>
+<div class="col"><div class="col-title" style="color:#1565C0;border-color:#1565C0">En negociación</div>
+<div class="item"><div class="name">Concierto Vallenato Barranquilla</div><div class="val">est. $45M</div></div>
+<div class="item"><div class="name">Stand-Up Medellín × 3</div><div class="val">est. $18M</div></div></div>
+<div class="col"><div class="col-title" style="color:#E65100;border-color:#E65100">Contrato firmado</div>
+<div class="item"><div class="name">Empareja2 — Tour 2026</div><div class="val">$62M</div></div></div>
+<div class="col"><div class="col-title" style="color:#2E7D32;border-color:#2E7D32">Activo / En venta</div>
+<div class="item"><div class="name">El Puma — Bogotá</div><div class="val">$54M</div></div>
+<div class="item"><div class="name">Feos Románticos</div><div class="val">$16M</div></div></div>
+</div>
+<div class="card"><h3>Empresarios en seguimiento activo</h3>
+<p style="font-size:.9rem;color:#555;line-height:2">3 reuniones agendadas esta semana &nbsp;·&nbsp; 2 propuestas enviadas sin respuesta &nbsp;·&nbsp; Meta de cierres mayo: <strong style="color:#E65100">5 contratos</strong></p>
+</div></div></body></html>`;
+}
+
+// ══════════════════════════════════════════════
+//  ARRANQUE
+// ══════════════════════════════════════════════
+loadData();
+render();
+</script>
+</body>
+</html>
