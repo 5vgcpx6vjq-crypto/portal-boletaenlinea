@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Corporativo — Boletaenlinea</title>
+<link rel="icon" href="https://boletaenlinea.co/wp-content/uploads/2026/01/favicon-2-300x300.png">
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+  /* ── VARIABLES ── */
+  :root {
+    --bel: #0D1E8D;
+    --bel-dark: #091466;
+    --bel-red: #E8232A;
+    --bel-light: #EEF1FA;
+    --bel-border: #d4daef;
+    --sidebar-w: 210px;
+    --header-h: 52px;
+    --tabs-h: 38px;
+    --status-h: 28px;
+    --bg: #ffffff;
+    --bg2: #f7f8fc;
+    --text: #1a1a2e;
+    --text2: #5a6080;
+    --text3: #9098b0;
+    --border: #e4e8f0;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 2px 12px rgba(13,30,141,.08);
+    --shadow-lg: 0 8px 32px rgba(13,30,141,.15);
+  }
+
+  /* ── LAYOUT ── */
+  #app { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    background: linear-gradient(140deg, var(--bel-dark) 0%, var(--bel) 55%, #1e3db5 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .login-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.3);
+    animation: slideUp .4s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .login-logo { margin-bottom: 28px; text-align: center; }
+  .login-logo img { height: 36px; filter: none; }
+  .login-logo .logo-fallback { display: none; font-size: 20px; font-weight: 900; color: var(--bel); letter-spacing: -1px; }
+  .login-label { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .login-input {
+    width: 100%; padding: 11px 14px; border-radius: 9px;
+    border: 1.5px solid var(--border); font-size: 13.5px;
+    outline: none; color: var(--text); margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .login-input:focus { border-color: var(--bel); }
+  .login-input.error { border-color: var(--bel-red); }
+  .login-btn {
+    width: 100%; padding: 13px; background: var(--bel); color: #fff;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: background .2s; letter-spacing: .3px;
+  }
+  .login-btn:hover { background: var(--bel-dark); }
+  .login-btn:disabled { background: #aab; cursor: default; }
+  .login-error { color: var(--bel-red); font-size: 12.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
+  .login-shortcuts { background: var(--bel-light); border-radius: 10px; padding: 13px 14px; margin-top: 18px; }
+  .login-shortcuts p { font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+  .login-shortcuts button {
+    display: block; width: 100%; text-align: left; padding: 3px 0;
+    background: none; border: none; cursor: pointer; font-size: 11px;
+    color: var(--bel); font-family: 'Courier New', monospace; font-weight: 600;
+  }
+  .login-shortcuts button:hover { color: var(--bel-dark); }
+
+  /* ── HEADER ── */
+  #header {
+    height: var(--header-h); background: var(--bel);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; flex-shrink: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo img { height: 22px; filter: brightness(0) invert(1); }
+  .header-logo .fallback { display: none; font-size: 15px; font-weight: 900; color: white; }
+  .header-sep { color: rgba(255,255,255,.25); font-size: 18px; }
+  .header-title { color: rgba(255,255,255,.7); font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .btn-save {
+    display: flex; align-items: center; gap: 5px; padding: 5px 13px;
+    border-radius: 7px; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.1); color: #fff; cursor: pointer;
+    font-size: 11.5px; font-weight: 600; transition: all .2s;
+  }
+  .btn-save:hover { background: rgba(255,255,255,.18); }
+  .btn-save.saved { background: rgba(46,125,50,.75); border-color: rgba(46,125,50,.5); }
+  .user-badge { display: flex; align-items: center; gap: 8px; }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,.2); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 800; color: #fff;
+  }
+  .user-name { color: rgba(255,255,255,.75); font-size: 11.5px; }
+  .btn-logout {
+    padding: 5px 9px; border-radius: 7px; border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.07); color: rgba(255,255,255,.65);
+    cursor: pointer; font-size: 12px; transition: all .2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,.15); }
+
+  /* ── DEPT TABS ── */
+  #dept-tabs {
+    height: var(--tabs-h); background: var(--bel-dark);
+    display: flex; align-items: flex-end; padding: 0 14px; flex-shrink: 0;
+  }
+  .dept-tab {
+    display: flex; align-items: center; gap: 6px; padding: 8px 15px;
+    background: transparent; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 400; color: rgba(255,255,255,.55);
+    border-radius: 6px 6px 0 0; transition: all .15s; font-family: inherit;
+  }
+  .dept-tab:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); }
+  .dept-tab.active { background: var(--bg2); color: var(--bel); font-weight: 700; }
+  .dept-tab svg { width: 14px; height: 14px; }
+
+  /* ── BODY ── */
+  #body { flex: 1; display: flex; overflow: hidden; background: var(--bg2); }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    border-right: 1px solid var(--border); background: var(--bg2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .sidebar-header {
+    padding: 10px 13px 5px; font-size: 9.5px; font-weight: 700;
+    color: var(--text3); text-transform: uppercase; letter-spacing: .1em;
+  }
+  .pages-list { flex: 1; overflow-y: auto; padding-bottom: 4px; }
+  .page-item {
+    display: flex; align-items: center; gap: 7px; padding: 8px 10px;
+    margin: 1px 5px; cursor: pointer; border-radius: var(--radius);
+    font-size: 12.5px; border: 1px solid transparent;
+    transition: all .12s; color: var(--text2); user-select: none;
+  }
+  .page-item:hover { background: var(--bg); color: var(--text); }
+  .page-item.active { background: var(--bg); font-weight: 700; }
+  .page-item svg { width: 13px; height: 13px; flex-shrink: 0; opacity: .7; }
+  .page-item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .page-del {
+    padding: 2px 4px; background: none; border: none; cursor: pointer;
+    color: var(--text3); border-radius: 4px; font-size: 13px; line-height: 1;
+    opacity: 0; transition: opacity .15s;
+  }
+  .page-item.active .page-del { opacity: .6; }
+  .page-item.active .page-del:hover { opacity: 1; color: var(--bel-red); }
+  .page-rename-input {
+    width: 100%; font-size: 12px; border: 1px solid var(--bel);
+    background: var(--bg); padding: 5px 8px; border-radius: 6px;
+    outline: none; color: var(--text); margin: 2px 6px; box-sizing: border-box;
+    width: calc(100% - 12px);
+  }
+  .sidebar-add { padding: 6px 7px; border-top: 1px solid var(--border); }
+  .sidebar-add-form { padding: 7px 8px; border-top: 1px solid var(--border); }
+  .btn-new-page {
+    width: 100%; display: flex; align-items: center; justify-content: center;
+    gap: 5px; padding: 7px; font-size: 11.5px; border-radius: 7px;
+    cursor: pointer; font-weight: 600; font-family: inherit; transition: all .15s;
+    background: transparent;
+  }
+  .btn-new-page:hover { background: var(--bel-light); }
+  .add-input {
+    width: 100%; font-size: 12px; padding: 7px 9px; border-radius: 7px;
+    border: 1.5px solid var(--bel); background: var(--bg); color: var(--text);
+    margin-bottom: 5px; outline: none; box-sizing: border-box;
+  }
+  .add-actions { display: flex; gap: 5px; }
+  .btn-create {
+    flex: 1; padding: 5px; font-size: 11px; border: none; border-radius: 7px;
+    color: #fff; cursor: pointer; font-weight: 700; font-family: inherit;
+  }
+  .btn-cancel-add {
+    padding: 5px 10px; font-size: 11px; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--text2);
+    font-family: inherit;
+  }
+  .empty-dept {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 12px; padding: 32px; text-align: center;
+  }
+  .empty-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--bel-light); display: flex; align-items: center; justify-content: center;
+  }
+  .empty-icon svg { width: 26px; height: 26px; }
+  .empty-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .empty-sub { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .btn-empty-add {
+    display: flex; align-items: center; gap: 6px; padding: 9px 20px;
+    border-radius: 9px; border: 2px solid; background: transparent;
+    cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit;
+    transition: all .15s;
+  }
+
+  /* ── WORKSPACE ── */
+  #workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .workspace-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 16px; border-bottom: 1px solid var(--border);
+    background: var(--bg); flex-shrink: 0;
+  }
+  .toolbar-breadcrumb { display: flex; align-items: center; gap: 8px; }
+  .breadcrumb-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .breadcrumb-dept { font-size: 12px; color: var(--text2); }
+  .breadcrumb-page { font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .toolbar-actions { display: flex; align-items: center; gap: 5px; }
+  .view-btn {
+    padding: 5px 11px; font-size: 11.5px; border-radius: 7px; cursor: pointer;
+    font-family: inherit; border: 1px solid var(--border); background: transparent;
+    color: var(--text2); font-weight: 400; transition: all .15s;
+  }
+  .view-btn:hover { background: var(--bel-light); }
+  .view-btn.active { font-weight: 700; }
+  .btn-open {
+    display: flex; align-items: center; gap: 4px; padding: 5px 10px;
+    font-size: 11.5px; border-radius: 7px; border: 1px solid var(--border);
+    background: transparent; cursor: pointer; color: var(--text2);
+    font-family: inherit; transition: all .15s;
+  }
+  .btn-open:hover { background: var(--bg2); }
+
+  /* ── PANELS ── */
+  .panels { flex: 1; display: flex; overflow: hidden; }
+  .panel-preview { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .panel-editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .panel-divider { width: 1px; background: var(--border); flex-shrink: 0; }
+  .panel-bar {
+    padding: 5px 14px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; font-size: 10.5px; font-weight: 600; letter-spacing: .05em;
+  }
+  .panel-bar.preview { color: rgba(255,255,255,.85); }
+  .panel-bar.editor { background: #1a1b2e; color: rgba(255,255,255,.5); }
+  .preview-frame { flex: 1; border: none; background: #fff; display: block; }
+  .code-editor {
+    flex: 1; resize: none; border: none; outline: none;
+    padding: 14px 16px; font-family: 'Courier New', 'Cascadia Code', monospace;
+    font-size: 12px; line-height: 1.65; background: #1e1e2e;
+    color: #cdd6f4; tab-size: 2;
+  }
+
+  /* ── STATUS BAR ── */
+  #status-bar {
+    height: var(--status-h); background: var(--bg2); border-top: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 16px; gap: 20px;
+    font-size: 10.5px; color: var(--text3); flex-shrink: 0;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #2E7D32; display: inline-block; margin-right: 5px; }
+  .status-right { margin-left: auto; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn .15s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal-box {
+    background: #fff; border-radius: 16px; padding: 28px;
+    max-width: 320px; width: 90%; box-shadow: 0 32px 80px rgba(0,0,0,.25);
+    animation: slideUp .2s ease;
+  }
+  .modal-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+  .modal-body { font-size: 13px; color: var(--text2); margin-bottom: 22px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; }
+  .btn-modal-cancel {
+    flex: 1; padding: 10px; border-radius: 9px; border: 1px solid var(--border);
+    background: transparent; cursor: pointer; font-size: 13px; color: var(--text2); font-family: inherit;
+  }
+  .btn-modal-del {
+    flex: 1; padding: 10px; border-radius: 9px; border: none;
+    background: var(--bel-red); cursor: pointer; font-size: 13px; color: #fff;
+    font-weight: 800; font-family: inherit;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #ccd; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIGURACIÓN — edita aquí tus usuarios
+// ══════════════════════════════════════════════
+const CONFIG = {
+  usuarios: [
+    { id:"admin",    email:"admin@boletaenlinea.co",          pass:"admin2024",   nombre:"Administrador",       rol:"admin", dept:null,            av:"AD" },
+    { id:"cont",     email:"contabilidad@boletaenlinea.co",   pass:"cont2024",    nombre:"Contabilidad",        rol:"user",  dept:"contabilidad",   av:"CO" },
+    { id:"oper",     email:"operaciones@boletaenlinea.co",    pass:"oper2024",    nombre:"Operaciones",         rol:"user",  dept:"operaciones",    av:"OP" },
+    { id:"comun",    email:"comunicaciones@boletaenlinea.co", pass:"com2024",     nombre:"Comunicaciones",      rol:"user",  dept:"comunicaciones", av:"CM" },
+    { id:"ger",      email:"gerencia@boletaenlinea.co",       pass:"ger2024",     nombre:"Gerencia Comercial",  rol:"user",  dept:"gerencia",       av:"GC" },
+  ],
+  departamentos: [
+    { id:"contabilidad",   label:"Contabilidad",       color:"#1565C0", iconPath:'M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3M9 11l3 3L22 4' },
+    { id:"operaciones",    label:"Operaciones",         color:"#2E7D32", iconPath:'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z' },
+    { id:"comunicaciones", label:"Comunicaciones",      color:"#6A1B9A", iconPath:'M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z' },
+    { id:"gerencia",       label:"Gerencia Comercial",  color:"#E65100", iconPath:'M3 3v18h18M9 17V9m4 8V5m4 12v-3' },
+  ]
+};
+
+// ══════════════════════════════════════════════
+//  PÁGINAS DEMO POR DEPARTAMENTO
+// ══════════════════════════════════════════════
+const DEMO = {
+  contabilidad: [
+    { id:"liq", title:"Liquidación de Eventos", content: genPageContabilidad1() },
+    { id:"gas", title:"Informe de Gastos",       content: genPageContabilidad2() },
+  ],
+  operaciones: [
+    { id:"ev",  title:"Eventos Activos",          content: genPageOperaciones1() },
+    { id:"pro", title:"Protocolo de Operación",   content: genPageOperaciones2() },
+  ],
+  comunicaciones: [
+    { id:"kit", title:"Kit de Marca Digital",     content: genPageComunicaciones1() },
+    { id:"cal", title:"Calendario Editorial",     content: genPageComunicaciones2() },
+  ],
+  gerencia: [
+    { id:"kpi", title:"KPIs Comerciales",         content: genPageGerencia1() },
+    { id:"pie", title:"Pipeline de Ventas",       content: genPageGerencia2() },
+  ]
+};
+
+// ══════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ══════════════════════════════════════════════
+let S = {
+  user: null,
+  pages: {},
+  dept: null,
+  pageId: null,
+  view: "preview",   // preview | editor | split
+  addOpen: false,
+  newTitle: "",
+  renaming: null,
+  renVal: "",
+  delTarget: null,
+  saved: false,
+};
+
+// ══════════════════════════════════════════════
+//  PERSISTENCIA  (localStorage)
+// ══════════════════════════════════════════════
+const LS_PAGES = "bel_pages_v5";
+const LS_SESS  = "bel_sess_v5";
+
+function loadData() {
+  try {
+    const sess = localStorage.getItem(LS_SESS);
+    if (sess) {
+      const u = JSON.parse(sess);
+      S.user = CONFIG.usuarios.find(x => x.id === u.id) || null;
+    }
+  } catch(e) {}
+  try {
+    const pg = localStorage.getItem(LS_PAGES);
+    S.pages = pg ? JSON.parse(pg) : JSON.parse(JSON.stringify(DEMO));
+  } catch(e) {
+    S.pages = JSON.parse(JSON.stringify(DEMO));
+  }
+  if (S.user) {
+    const avail = availDepts();
+    S.dept = avail[0]?.id || null;
+    if (S.dept) S.pageId = (S.pages[S.dept]||[])[0]?.id || null;
+  }
+}
+
+function savePages() {
+  localStorage.setItem(LS_PAGES, JSON.stringify(S.pages));
+  S.saved = true;
+  render();
+  setTimeout(() => { S.saved = false; render(); }, 2000);
+}
+
+function login(user) {
+  S.user = user;
+  localStorage.setItem(LS_SESS, JSON.stringify({ id: user.id }));
+  const avail = availDepts();
+  S.dept = avail[0]?.id || null;
+  if (S.dept) S.pageId = (S.pages[S.dept]||[])[0]?.id || null;
+  render();
+}
+
+function logout() {
+  localStorage.removeItem(LS_SESS);
+  S.user = null; S.dept = null; S.pageId = null;
+  render();
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function availDepts() {
+  if (!S.user) return [];
+  return S.user.rol === "admin"
+    ? CONFIG.departamentos
+    : CONFIG.departamentos.filter(d => d.id === S.user.dept);
+}
+function currentDept() { return CONFIG.departamentos.find(d => d.id === S.dept); }
+function currentPages() { return S.pages[S.dept] || []; }
+function activePage() { return currentPages().find(p => p.id === S.pageId); }
+
+function setDept(id) {
+  S.dept = id;
+  const list = S.pages[id] || [];
+  S.pageId = list[0]?.id || null;
+  S.addOpen = false; S.renaming = null;
+  render();
+}
+function setPage(id) {
+  S.pageId = id;
+  S.renaming = null;
+  render();
+}
+function setView(v) { S.view = v; render(); updatePreview(); }
+
+function addPage() {
+  const t = S.newTitle.trim();
+  if (!t) return;
+  const d = currentDept();
+  const id = "p" + Date.now();
+  const newP = {
+    id, title: t,
+    content: templateBlank(t, d?.label || "", d?.color || "#0D1E8D")
+  };
+  S.pages[S.dept] = [...(S.pages[S.dept]||[]), newP];
+  S.pageId = id; S.newTitle = ""; S.addOpen = false;
+  render(); updatePreview();
+}
+
+function deletePage(id) {
+  const list = (S.pages[S.dept]||[]).filter(p => p.id !== id);
+  S.pages[S.dept] = list;
+  S.pageId = list[0]?.id || null;
+  S.delTarget = null;
+  render(); updatePreview();
+}
+
+function applyRename() {
+  const t = S.renVal.trim();
+  if (t) {
+    S.pages[S.dept] = (S.pages[S.dept]||[]).map(p =>
+      p.id === S.renaming ? { ...p, title: t } : p
+    );
+  }
+  S.renaming = null; render();
+}
+
+function updateContent(val) {
+  S.pages[S.dept] = (S.pages[S.dept]||[]).map(p =>
+    p.id === S.pageId ? { ...p, content: val } : p
+  );
+  // live preview
+  const frame = document.querySelector(".preview-frame");
+  if (frame) frame.srcdoc = val;
+}
+
+function updatePreview() {
+  const frame = document.querySelector(".preview-frame");
+  const pg = activePage();
+  if (frame && pg) frame.srcdoc = pg.content;
+}
+
+function openInTab() {
+  const pg = activePage();
+  if (!pg) return;
+  const b = new Blob([pg.content], { type: "text/html" });
+  window.open(URL.createObjectURL(b), "_blank");
+}
+
+// ══════════════════════════════════════════════
+//  RENDER PRINCIPAL
+// ══════════════════════════════════════════════
+function render() {
+  const app = document.getElementById("app");
+  if (!S.user) {
+    app.innerHTML = renderLogin();
+    bindLogin();
+    return;
+  }
+  app.innerHTML = renderPortal();
+  bindPortal();
+  updatePreview();
+}
+
+// ── LOGIN ──
+function renderLogin() {
+  return `
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">
+        <img src="https://boletaenlinea.co/wp-content/uploads/2026/01/boletaenlinea-logo.svg"
+          alt="Boletaenlinea" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="logo-fallback">🎟 boletaenlinea</div>
+        <p style="font-size:10.5px;color:#999;margin-top:10px;letter-spacing:.8px;text-transform:uppercase">Portal Corporativo Interno</p>
+      </div>
+      <h2 style="font-size:20px;font-weight:800;color:#0D1E8D;margin-bottom:4px">Iniciar sesión</h2>
+      <p style="font-size:12px;color:#999;margin-bottom:22px">Acceso exclusivo para colaboradores</p>
+      <label class="login-label">Correo corporativo</label>
+      <input id="inp-email" class="login-input" type="email" placeholder="usuario@boletaenlinea.co" autocomplete="email">
+      <label class="login-label">Contraseña</label>
+      <input id="inp-pass" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password">
+      <div id="login-err" style="display:none" class="login-error">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="login-err-txt"></span>
+      </div>
+      <button class="login-btn" id="btn-login">Ingresar al Portal →</button>
+      <div class="login-shortcuts">
+        <p>Accesos rápidos (demo):</p>
+        ${CONFIG.usuarios.map(u => `<button class="shortcut-btn" data-email="${u.email}" data-pass="${u.pass}">${u.email}</button>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function bindLogin() {
+  document.getElementById("btn-login").onclick = doLogin;
+  document.getElementById("inp-pass").onkeydown = e => { if (e.key === "Enter") doLogin(); };
+  document.getElementById("inp-email").onkeydown = e => { if (e.key === "Enter") doLogin(); };
+  document.querySelectorAll(".shortcut-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.getElementById("inp-email").value = btn.dataset.email;
+      document.getElementById("inp-pass").value = btn.dataset.pass;
+      document.getElementById("login-err").style.display = "none";
+      document.getElementById("inp-email").classList.remove("error");
+      document.getElementById("inp-pass").classList.remove("error");
+    };
+  });
+}
+
+function doLogin() {
+  const em = document.getElementById("inp-email").value.trim().toLowerCase();
+  const pw = document.getElementById("inp-pass").value;
+  const u = CONFIG.usuarios.find(x => x.email === em && x.pass === pw);
+  if (u) {
+    login(u);
+  } else {
+    document.getElementById("inp-email").classList.add("error");
+    document.getElementById("inp-pass").classList.add("error");
+    const err = document.getElementById("login-err");
+    document.getElementById("login-err-txt").textContent = "Correo o contraseña incorrectos";
+    err.style.display = "flex";
+  }
+}
+
+// ── PORTAL ──
+function renderPortal() {
+  const avail = availDepts();
+  const d = currentDept();
+  const list = currentPages();
+  const pg = activePage();
+  const color = d?.color || "#0D1E8D";
+
+  return `
+  <div id="portal" style="height:100vh;display:flex;flex-direction:column;overflow:hidden;">
+    ${renderHeader()}
+    ${renderDeptTabs(avail, d)}
+    <div id="body" style="flex:1;display:flex;overflow:hidden;">
+      ${renderSidebar(list, d, pg)}
+      ${pg ? renderWorkspace(pg, d) : renderEmpty(d)}
+    </div>
+    ${renderStatusBar()}
+    ${S.delTarget ? renderDeleteModal() : ""}
+  </div>`;
+}
+
+function renderHeader() {
+  return `
+  <div id="header">
+    <div class="header-left">
+      <div class="header-logo">
+        <img src="https://boletaenlinea.co/wp-content/uploads/2026/01/boletaenlinea-logo.svg"
+          alt="BEL" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="fallback">🎟 BEL</div>
+      </div>
+      <span class="header-sep">|</span>
+      <span class="header-title">Portal Corporativo</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-save ${S.saved?"saved":""}" id="btn-save">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          ${S.saved
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>'}
+        </svg>
+        ${S.saved ? "Guardado" : "Guardar cambios"}
+      </button>
+      <div class="user-badge">
+        <div class="user-avatar">${S.user.av}</div>
+        <span class="user-name">${S.user.nombre}</span>
+      </div>
+      <button class="btn-logout" id="btn-logout" title="Cerrar sesión">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderDeptTabs(avail, active) {
+  return `
+  <div id="dept-tabs">
+    ${avail.map(d => `
+      <button class="dept-tab ${d.id===S.dept?"active":""}" data-dept="${d.id}"
+        style="${d.id===S.dept?`color:${d.color}`:""}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="${d.iconPath}"/>
+        </svg>
+        ${d.label}
+      </button>
+    `).join("")}
+  </div>`;
+}
+
+function renderSidebar(list, dept, activePg) {
+  const color = dept?.color || "#0D1E8D";
+  return `
+  <div id="sidebar">
+    <div class="sidebar-header">${dept?.label || "Páginas"}</div>
+    <div class="pages-list" id="pages-list">
+      ${list.length === 0
+        ? `<div style="padding:14px 12px;font-size:12px;color:var(--text3);font-style:italic">Sin páginas aún</div>`
+        : list.map(p => {
+            if (S.renaming === p.id) {
+              return `<input class="page-rename-input" id="rename-input" value="${escHtml(S.renVal)}" placeholder="Nombre..." autocomplete="off">`;
+            }
+            const sel = S.pageId === p.id;
+            return `<div class="page-item ${sel?"active":""}" data-pid="${p.id}"
+              style="${sel?`border-color:${color};color:${color}`:""}"
+              title="Doble clic para renombrar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:${sel?color:"inherit"}">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>${escHtml(p.title)}</span>
+              ${sel ? `<button class="page-del" data-del="${p.id}" title="Eliminar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+                </svg>
+              </button>` : ""}
+            </div>`;
+          }).join("")
+      }
+    </div>
+    ${S.addOpen
+      ? `<div class="sidebar-add-form">
+          <input class="add-input" id="add-input" placeholder="Nombre de la página..." value="${escHtml(S.newTitle)}" autocomplete="off"
+            style="border-color:${color}">
+          <div class="add-actions">
+            <button class="btn-create" id="btn-create" style="background:${color}">Crear</button>
+            <button class="btn-cancel-add" id="btn-cancel-add">✕</button>
+          </div>
+        </div>`
+      : `<div class="sidebar-add">
+          <button class="btn-new-page" id="btn-new-page"
+            style="border:1.5px dashed ${color};color:${color}">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva página
+          </button>
+        </div>`
+    }
+  </div>`;
+}
+
+function renderWorkspace(pg, dept) {
+  const color = dept?.color || "#0D1E8D";
+  const showPreview = S.view === "preview" || S.view === "split";
+  const showEditor  = S.view === "editor"  || S.view === "split";
+
+  return `
+  <div id="workspace">
+    <div class="workspace-toolbar">
+      <div class="toolbar-breadcrumb">
+        <span class="breadcrumb-dot" style="background:${color}"></span>
+        <span class="breadcrumb-dept">${dept?.label}</span>
+        <span style="color:var(--text3)">›</span>
+        <span class="breadcrumb-page">${escHtml(pg.title)}</span>
+      </div>
+      <div class="toolbar-actions">
+        ${[
+          { k:"preview", lbl:"👁 Vista previa" },
+          { k:"split",   lbl:"◫ Dividida" },
+          { k:"editor",  lbl:"</> Editor" },
+        ].map(({k,lbl}) => `
+          <button class="view-btn ${S.view===k?"active":""}" data-view="${k}"
+            style="${S.view===k?`border-color:${color};background:${color}18;color:${color}`:""}">${lbl}</button>
+        `).join("")}
+        <button class="btn-open" id="btn-open">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          Abrir
+        </button>
+      </div>
+    </div>
+    <div class="panels">
+      ${showPreview ? `
+        <div class="panel-preview">
+          <div class="panel-bar preview" style="background:${color}">
+            <span>👁 PREVISUALIZACIÓN EN VIVO</span>
+            <span style="opacity:.6;font-size:10px">${escHtml(pg.title)}</span>
+          </div>
+          <iframe class="preview-frame" sandbox="allow-scripts allow-forms" title="preview"></iframe>
+        </div>
+      ` : ""}
+      ${S.view === "split" ? `<div class="panel-divider"></div>` : ""}
+      ${showEditor ? `
+        <div class="panel-editor">
+          <div class="panel-bar editor">
+            <span>&lt;/&gt; EDITOR HTML</span>
+            <span id="char-count">${pg.content?.length||0} caracteres</span>
+          </div>
+          <textarea class="code-editor" id="code-editor" spellcheck="false">${escHtml(pg.content||"")}</textarea>
+        </div>
+      ` : ""}
+    </div>
+  </div>`;
+}
+
+function renderEmpty(dept) {
+  const color = dept?.color || "#0D1E8D";
+  return `
+  <div id="workspace" style="flex:1">
+    <div class="empty-dept">
+      <div class="empty-icon" style="background:${color}18">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.5">
+          <path d="${dept?.iconPath||'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'}"/>
+        </svg>
+      </div>
+      <p class="empty-title">${dept?.label || "Departamento"}</p>
+      <p class="empty-sub">Crea tu primera landing page para comenzar a gestionar contenido de esta área.</p>
+      <button class="btn-empty-add" id="btn-new-page"
+        style="border-color:${color};color:${color}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Crear primera página
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderStatusBar() {
+  return `
+  <div id="status-bar">
+    <span><span class="status-dot"></span>${S.user.email}</span>
+    <span>Doble clic en un nombre para renombrarlo</span>
+    <span class="status-right">boletaenlinea.co — Portal Corporativo Interno</span>
+  </div>`;
+}
+
+function renderDeleteModal() {
+  return `
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <p class="modal-title">¿Eliminar página?</p>
+      <p class="modal-body">Se eliminará permanentemente <strong>"${escHtml(S.delTarget.title)}"</strong>. Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="btn-modal-cancel">Cancelar</button>
+        <button class="btn-modal-del" id="btn-modal-del">Eliminar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── EVENT BINDING ──
+function bindPortal() {
+  // Header
+  document.getElementById("btn-save")?.addEventListener("click", savePages);
+  document.getElementById("btn-logout")?.addEventListener("click", logout);
+
+  // Dept tabs
+  document.querySelectorAll(".dept-tab").forEach(btn => {
+    btn.addEventListener("click", () => setDept(btn.dataset.dept));
+  });
+
+  // Page items
+  document.querySelectorAll(".page-item").forEach(item => {
+    item.addEventListener("click", () => {
+      if (S.renaming) return;
+      setPage(item.dataset.pid);
+    });
+    item.addEventListener("dblclick", () => {
+      const p = currentPages().find(x => x.id === item.dataset.pid);
+      if (p) { S.renaming = p.id; S.renVal = p.title; render(); bindPortal(); focusRename(); }
+    });
+  });
+
+  // Delete buttons on page items
+  document.querySelectorAll(".page-del").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      const p = currentPages().find(x => x.id === btn.dataset.del);
+      if (p) { S.delTarget = p; render(); bindPortal(); }
+    });
+  });
+
+  // Rename input
+  const ri = document.getElementById("rename-input");
+  if (ri) {
+    ri.focus(); ri.select();
+    ri.addEventListener("keydown", e => {
+      if (e.key === "Enter") { S.renVal = ri.value; applyRename(); }
+      if (e.key === "Escape") { S.renaming = null; render(); bindPortal(); }
+    });
+    ri.addEventListener("blur", () => { S.renVal = ri.value; applyRename(); });
+    ri.addEventListener("input", e => { S.renVal = e.target.value; });
+  }
+
+  // Add page
+  document.getElementById("btn-new-page")?.addEventListener("click", () => {
+    S.addOpen = true; render(); bindPortal();
+    document.getElementById("add-input")?.focus();
+  });
+  const ai = document.getElementById("add-input");
+  if (ai) {
+    ai.addEventListener("input", e => { S.newTitle = e.target.value; });
+    ai.addEventListener("keydown", e => {
+      if (e.key === "Enter") { S.newTitle = ai.value; addPage(); }
+      if (e.key === "Escape") { S.addOpen = false; S.newTitle = ""; render(); bindPortal(); }
+    });
+  }
+  document.getElementById("btn-create")?.addEventListener("click", () => {
+    const ai2 = document.getElementById("add-input");
+    if (ai2) S.newTitle = ai2.value;
+    addPage();
+  });
+  document.getElementById("btn-cancel-add")?.addEventListener("click", () => {
+    S.addOpen = false; S.newTitle = ""; render(); bindPortal();
+  });
+
+  // View buttons
+  document.querySelectorAll(".view-btn").forEach(btn => {
+    btn.addEventListener("click", () => setView(btn.dataset.view));
+  });
+
+  // Open in tab
+  document.getElementById("btn-open")?.addEventListener("click", openInTab);
+
+  // Code editor
+  const ed = document.getElementById("code-editor");
+  if (ed) {
+    ed.addEventListener("input", () => {
+      updateContent(ed.value);
+      const cc = document.getElementById("char-count");
+      if (cc) cc.textContent = ed.value.length + " caracteres";
+    });
+    ed.addEventListener("keydown", e => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const s = ed.selectionStart, end = ed.selectionEnd;
+        ed.value = ed.value.substring(0,s) + "  " + ed.value.substring(end);
+        ed.selectionStart = ed.selectionEnd = s + 2;
+        updateContent(ed.value);
+      }
+    });
+  }
+
+  // Delete modal
+  document.getElementById("btn-modal-cancel")?.addEventListener("click", () => {
+    S.delTarget = null; render(); bindPortal();
+  });
+  document.getElementById("btn-modal-del")?.addEventListener("click", () => {
+    deletePage(S.delTarget.id);
+  });
+  document.getElementById("modal-overlay")?.addEventListener("click", e => {
+    if (e.target.id === "modal-overlay") { S.delTarget = null; render(); bindPortal(); }
+  });
+}
+
+function focusRename() {
+  const ri = document.getElementById("rename-input");
+  if (ri) { ri.focus(); ri.select(); }
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function escHtml(str) {
+  return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ══════════════════════════════════════════════
+//  TEMPLATES HTML POR DEPARTAMENTO
+// ══════════════════════════════════════════════
+function templateBlank(title, dept, color) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f7f9ff; color: #222; }
+  header { background: ${color}; color: #fff; padding: 40px; }
+  .logo-tag { font-size: 11px; opacity: .6; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  h1 { font-size: 1.8rem; font-weight: 800; }
+  .sub { opacity: .75; margin-top: 8px; font-size: .95rem; }
+  .wrap { padding: 40px; max-width: 960px; margin: 0 auto; }
+  .card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 20px; border: 1px solid #e8edf8; }
+  h2 { font-size: 1.1rem; font-weight: 700; color: ${color}; margin-bottom: 12px; }
+  p { color: #555; line-height: 1.7; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo-tag">Boletaenlinea · ${dept}</div>
+    <h1>${title}</h1>
+    <p class="sub">Edita este HTML desde el portal para personalizar esta landing page.</p>
+  </header>
+  <div class="wrap">
+    <div class="card">
+      <h2>Descripción</h2>
+      <p>Agrega aquí el contenido principal de esta página. Puedes usar HTML, CSS y JavaScript directamente.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+function genPageContabilidad1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Liquidación de Eventos</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F3F6FF}header{background:#1565C0;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:1000px;margin:0 auto}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}.stat{background:#fff;border-radius:12px;padding:22px;border-bottom:4px solid #1565C0}.stat .n{font-size:2.2rem;font-weight:900;color:#1565C0}.stat .l{font-size:.8rem;color:#777;margin-top:4px}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #e0e8f8}h3{font-size:1rem;font-weight:700;color:#1565C0;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #eef2ff}table{width:100%;border-collapse:collapse;font-size:.88rem}th{background:#EEF2FF;color:#1565C0;font-weight:700;padding:10px 12px;text-align:left}td{padding:10px 12px;border-bottom:1px solid #f0f4fb;color:#333}.ok{background:#E8F5E9;color:#2E7D32;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:700}.pend{background:#FFF8E1;color:#F57F17;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:700}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Contabilidad</div><h1>Liquidación de Eventos</h1><p class="sub">Panel de control contable — Mayo 2026</p></header>
+<div class="wrap">
+<div class="stats"><div class="stat"><div class="n">$48.2M</div><div class="l">Ingresos del mes</div></div><div class="stat"><div class="n">23</div><div class="l">Eventos liquidados</div></div><div class="stat"><div class="n">$3.1M</div><div class="l">Comisiones generadas</div></div></div>
+<div class="card"><h3>Eventos Pendientes de Liquidación</h3>
+<table><tr><th>Evento</th><th>Fecha</th><th>Boletas vendidas</th><th>Total</th><th>Estado</th></tr>
+<tr><td>Concierto Jazz Cali</td><td>10/05/2026</td><td>450</td><td>$9.000.000</td><td><span class="pend">Pendiente</span></td></tr>
+<tr><td>Show Comedia Bogotá</td><td>08/05/2026</td><td>280</td><td>$5.600.000</td><td><span class="pend">Pendiente</span></td></tr>
+<tr><td>Festival Infantil Medellín</td><td>05/05/2026</td><td>620</td><td>$12.400.000</td><td><span class="ok">Liquidado</span></td></tr>
+<tr><td>El Puma — Gracias Tour</td><td>03/05/2026</td><td>1800</td><td>$54.000.000</td><td><span class="ok">Liquidado</span></td></tr>
+</table></div>
+<div class="card"><h3>Resumen Mayo 2026</h3><p style="line-height:2;color:#555;font-size:.9rem">Total eventos: <strong>26</strong> &nbsp;·&nbsp; Boletas vendidas: <strong>8.340</strong> &nbsp;·&nbsp; Devoluciones: <strong>42</strong> &nbsp;·&nbsp; Neto a transferir: <strong style="color:#1565C0">$44.8M COP</strong></p></div>
+</div></body></html>`;
+}
+
+function genPageContabilidad2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Informe de Gastos</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F3F6FF}header{background:#1565C0;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:900px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #e0e8f8}h3{font-size:1rem;font-weight:700;color:#1565C0;margin-bottom:14px}.item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f4fb;font-size:.9rem}.item .cat{color:#555;display:flex;align-items:center;gap:10px}.item .val{font-weight:700;color:#1565C0}.total{background:#EEF2FF;border-radius:12px;padding:18px 22px;display:flex;justify-content:space-between;font-weight:900;font-size:1.1rem;color:#1565C0}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Contabilidad</div><h1>Informe de Gastos</h1><p class="sub">Consolidado Mayo 2026</p></header>
+<div class="wrap"><div class="card"><h3>Desglose por categoría</h3>
+<div class="item"><span class="cat">🏢 Plataforma tecnológica</span><span class="val">$4.200.000</span></div>
+<div class="item"><span class="cat">📢 Marketing y publicidad</span><span class="val">$2.800.000</span></div>
+<div class="item"><span class="cat">👥 Nómina operativa</span><span class="val">$8.500.000</span></div>
+<div class="item"><span class="cat">🔧 Logística y operaciones</span><span class="val">$1.600.000</span></div>
+<div class="item"><span class="cat">📋 Gastos administrativos</span><span class="val">$900.000</span></div>
+</div><div class="total"><span>Total Gastos Mayo 2026</span><span>$18.000.000</span></div></div></body></html>`;
+}
+
+function genPageOperaciones1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Eventos Activos</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F1F8F2}header{background:#2E7D32;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:960px;margin:0 auto}.ev{background:#fff;border-radius:12px;padding:22px;margin-bottom:14px;border-left:5px solid #2E7D32;display:flex;justify-content:space-between;align-items:center;gap:16px;border:1px solid #d4edda;border-left:5px solid #2E7D32}.ev-info h3{font-size:1rem;font-weight:700;color:#1B5E20;margin-bottom:6px}.ev-info p{font-size:.85rem;color:#555;line-height:1.6}.badge{padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap;min-width:90px;text-align:center}.activo{background:#E8F5E9;color:#2E7D32}.proximo{background:#E3F2FD;color:#1565C0}.sold{background:#FCE4EC;color:#C62828}.bar{background:#e0e0e0;height:8px;border-radius:10px;margin-top:10px;overflow:hidden;width:100%;max-width:400px}.fill{background:#2E7D32;height:8px;border-radius:10px}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Operaciones</div><h1>Eventos Activos</h1><p class="sub">Cartelera operativa — Mayo 2026</p></header>
+<div class="wrap">
+<div class="ev"><div class="ev-info" style="flex:1"><h3>El Puma — Gracias Tour 2026</h3><p>📍 Bogotá &nbsp;·&nbsp; 📅 25 mayo 2026 &nbsp;·&nbsp; Recinto: Movistar Arena</p><div class="bar"><div class="fill" style="width:90%"></div></div><p style="font-size:.8rem;color:#2E7D32;margin-top:5px">1.800 / 2.000 boletas vendidas — 90%</p></div><span class="badge activo">Activo</span></div>
+<div class="ev"><div class="ev-info" style="flex:1"><h3>Feos Pero Románticos</h3><p>📍 Cali &nbsp;·&nbsp; 📅 31 mayo 2026 &nbsp;·&nbsp; Recinto: Teatro Municipal</p><div class="bar"><div class="fill" style="width:77%"></div></div><p style="font-size:.8rem;color:#2E7D32;margin-top:5px">620 / 800 boletas vendidas — 77%</p></div><span class="badge activo">Activo</span></div>
+<div class="ev"><div class="ev-info" style="flex:1"><h3>Menopáusicas — El Show</h3><p>📍 Cali &nbsp;·&nbsp; 📅 18 mayo 2026 &nbsp;·&nbsp; Recinto: Cine Colombia Premium</p><div class="bar"><div class="fill" style="width:100%;background:#C62828"></div></div><p style="font-size:.8rem;color:#C62828;margin-top:5px">400 / 400 boletas vendidas — Agotado</p></div><span class="badge sold">Sold Out</span></div>
+<div class="ev"><div class="ev-info" style="flex:1"><h3>Festival Infantil — Los Cerditos</h3><p>📍 Medellín &nbsp;·&nbsp; 📅 15 junio 2026 &nbsp;·&nbsp; Recinto: Centro de Convenciones</p><div class="bar"><div class="fill" style="width:23%"></div></div><p style="font-size:.8rem;color:#1565C0;margin-top:5px">280 / 1.200 boletas vendidas — 23%</p></div><span class="badge proximo">Próximo</span></div>
+</div></body></html>`;
+}
+
+function genPageOperaciones2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Protocolo de Operación</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F1F8F2}header{background:#2E7D32;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:900px;margin:0 auto}.step{display:flex;gap:16px;margin-bottom:20px;background:#fff;border-radius:12px;padding:22px;border:1px solid #d4edda}.num{width:36px;height:36px;border-radius:50%;background:#2E7D32;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;flex-shrink:0}.step-content h3{font-size:.95rem;font-weight:700;color:#1B5E20;margin-bottom:6px}.step-content p{font-size:.88rem;color:#555;line-height:1.6}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Operaciones</div><h1>Protocolo de Operación</h1><p class="sub">Guía paso a paso para la gestión de eventos</p></header>
+<div class="wrap">
+<div class="step"><div class="num">1</div><div class="step-content"><h3>Registro del evento</h3><p>El empresario envía la ficha técnica del evento. Se verifica capacidad, artista, fecha y lugar. Se firma el contrato de boletería.</p></div></div>
+<div class="step"><div class="num">2</div><div class="step-content"><h3>Carga en plataforma</h3><p>El equipo técnico crea el evento en boletaenlinea.co, configura sectores, precios y cupos. Se realiza prueba de compra antes de activar.</p></div></div>
+<div class="step"><div class="num">3</div><div class="step-content"><h3>Publicación y ventas</h3><p>Se activa la página del evento. Se coordina con Comunicaciones la publicación en redes sociales y envío de correos masivos.</p></div></div>
+<div class="step"><div class="num">4</div><div class="step-content"><h3>Día del evento</h3><p>Se despliega el equipo de control con Checkinera. Se monitorea el ingreso en tiempo real y se resuelven incidencias.</p></div></div>
+<div class="step"><div class="num">5</div><div class="step-content"><h3>Liquidación post-evento</h3><p>En las 48h siguientes se genera el informe de ventas y se entrega a Contabilidad para liquidación al empresario.</p></div></div>
+</div></body></html>`;
+}
+
+function genPageComunicaciones1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Kit de Marca Digital</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F8F0FF}header{background:#6A1B9A;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:960px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #ead6f8}h3{font-size:1rem;font-weight:700;color:#6A1B9A;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #f3e8fc}.chips{display:flex;gap:12px;flex-wrap:wrap}.chip{border-radius:10px;padding:18px 22px;min-width:130px;text-align:center}.chip .name{font-weight:800;font-size:.9rem}.chip .hex{font-size:.72rem;font-family:monospace;opacity:.75;margin-top:4px}.redes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.red{background:#F8F0FF;border-radius:10px;padding:14px;text-align:center}.red .ico{font-size:1.8rem;margin-bottom:6px}.font-box{background:#F8F0FF;border-radius:10px;padding:18px;margin-bottom:10px}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Comunicaciones</div><h1>Kit de Marca Digital</h1><p class="sub">Guía oficial de identidad visual corporativa</p></header>
+<div class="wrap">
+<div class="card"><h3>Paleta de Colores Oficial</h3><div class="chips">
+<div class="chip" style="background:#0D1E8D;color:#fff"><div class="name">Azul Principal</div><div class="hex">#0D1E8D</div></div>
+<div class="chip" style="background:#E8232A;color:#fff"><div class="name">Rojo Acento</div><div class="hex">#E8232A</div></div>
+<div class="chip" style="background:#091466;color:#fff"><div class="name">Azul Oscuro</div><div class="hex">#091466</div></div>
+<div class="chip" style="background:#EEF1FA;color:#0D1E8D;border:1px solid #c8d4f0"><div class="name">Fondo Claro</div><div class="hex">#EEF1FA</div></div>
+</div></div>
+<div class="card"><h3>Tipografía Corporativa</h3>
+<div class="font-box"><p style="font-size:2rem;font-weight:900;color:#0D1E8D;letter-spacing:-1px">Boletaenlinea</p><p style="font-size:.75rem;color:#888;margin-top:5px">Heading — Weight 900 — Segoe UI</p></div>
+<div class="font-box"><p style="font-size:.95rem;color:#444;line-height:1.7">Tu destino para eventos inolvidables. Boletos para conciertos, teatro, deportes y más. ¡Haz tus momentos especiales con nosotros! 🎟️</p><p style="font-size:.75rem;color:#888;margin-top:5px">Body — Weight 400 — Segoe UI</p></div>
+</div>
+<div class="card"><h3>Canales Digitales Oficiales</h3><div class="redes">
+<div class="red"><div class="ico">📘</div><strong>Facebook</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@Boletaenlinea</p></div>
+<div class="red"><div class="ico">📸</div><strong>Instagram</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@boletaenlinea</p></div>
+<div class="red"><div class="ico">🐦</div><strong>Twitter/X</strong><p style="font-size:.75rem;color:#666;margin-top:3px">@boletaenlinea</p></div>
+<div class="red"><div class="ico">💬</div><strong>WhatsApp</strong><p style="font-size:.75rem;color:#666;margin-top:3px">+57 315 4237213</p></div>
+</div></div>
+</div></body></html>`;
+}
+
+function genPageComunicaciones2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Calendario Editorial</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#F8F0FF}header{background:#6A1B9A;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:960px;margin:0 auto}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #ead6f8}h3{font-size:1rem;font-weight:700;color:#6A1B9A;margin-bottom:14px}.post{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f5eeff}.post:last-child{border:none}.date{background:#6A1B9A;color:#fff;border-radius:8px;padding:6px 10px;text-align:center;min-width:54px;font-size:.82rem;font-weight:700}.canal{padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;white-space:nowrap}.ig{background:#fce4f8;color:#880e4f}.fb{background:#e3f0ff;color:#0d47a1}.wa{background:#e8f5e9;color:#1b5e20}.post-text{flex:1;font-size:.88rem;color:#444;line-height:1.4}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Comunicaciones</div><h1>Calendario Editorial</h1><p class="sub">Publicaciones programadas — Mayo 2026</p></header>
+<div class="wrap"><div class="card"><h3>Publicaciones de la semana</h3>
+<div class="post"><div class="date">14<br>May</div><span class="canal ig">Instagram</span><p class="post-text">Reels — Preventa El Puma Gracias Tour. Formato vertical 9:16. Copy: "¡Ya casi! Últimas boletas disponibles 🎟️"</p></div>
+<div class="post"><div class="date">15<br>May</div><span class="canal fb">Facebook</span><p class="post-text">Post informativo — Puntos de venta Cali y Bogotá. Incluir mapa interactivo y horarios de atención.</p></div>
+<div class="post"><div class="date">17<br>May</div><span class="canal wa">WhatsApp</span><p class="post-text">Envío masivo — Recordatorio evento Menopáusicas. Lista: 2.400 contactos segmentados Cali.</p></div>
+<div class="post"><div class="date">20<br>May</div><span class="canal ig">Instagram</span><p class="post-text">Stories — Countdown 5 días para Feos Pero Románticos. Sticker de cuenta regresiva + link en bio.</p></div>
+<div class="post"><div class="date">22<br>May</div><span class="canal fb">Facebook</span><p class="post-text">Live — Entrevista con artistas del Festival Infantil. Duración estimada: 20 minutos.</p></div>
+</div></div></body></html>`;
+}
+
+function genPageGerencia1() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>KPIs Comerciales</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#FFF8F0}header{background:#E65100;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:1000px;margin:0 auto}.kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}.kpi{background:#fff;border-radius:12px;padding:24px;border-left:5px solid #E65100;border:1px solid #fde8d0;border-left:5px solid #E65100}.kpi .n{font-size:2.2rem;font-weight:900;color:#E65100}.kpi .l{font-size:.82rem;color:#777;margin-top:4px}.kpi .d{font-size:.82rem;color:#2E7D32;margin-top:8px;font-weight:700}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #fde8d0}h3{font-size:1rem;font-weight:700;color:#E65100;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #fdebd0}.br{display:flex;align-items:center;gap:12px;margin-bottom:11px}.brl{min-width:100px;font-size:.85rem;color:#555;font-weight:500}.brt{flex:1;background:#eee;border-radius:10px;height:10px}.brf{background:#E65100;height:10px;border-radius:10px}.brp{font-size:.82rem;color:#888;min-width:36px;text-align:right;font-weight:600}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Gerencia Comercial</div><h1>KPIs Comerciales</h1><p class="sub">Tablero de indicadores estratégicos — Mayo 2026</p></header>
+<div class="wrap">
+<div class="kgrid">
+<div class="kpi"><div class="n">+500K</div><div class="l">Boletas vendidas (histórico)</div><div class="d">▲ Meta 2026: 650.000 boletas</div></div>
+<div class="kpi"><div class="n">400+</div><div class="l">Eventos con sold out</div><div class="d">▲ +38 eventos vs 2025</div></div>
+<div class="kpi"><div class="n">$48.2M</div><div class="l">Facturación Mayo 2026</div><div class="d">▲ +12% vs abril 2026</div></div>
+<div class="kpi"><div class="n">98.2%</div><div class="l">Satisfacción del cliente</div><div class="d">▲ Meta: 97% — Superada ✓</div></div>
+</div>
+<div class="card"><h3>Cumplimiento de metas por canal — Mayo 2026</h3>
+<div class="br"><span class="brl">🌐 Web</span><div class="brt"><div class="brf" style="width:84%"></div></div><span class="brp">84%</span></div>
+<div class="br"><span class="brl">💬 WhatsApp</span><div class="brt"><div class="brf" style="width:71%"></div></div><span class="brp">71%</span></div>
+<div class="br"><span class="brl">🏪 Presencial</span><div class="brt"><div class="brf" style="width:60%"></div></div><span class="brp">60%</span></div>
+<div class="br"><span class="brl">📞 Telefónico</span><div class="brt"><div class="brf" style="width:45%"></div></div><span class="brp">45%</span></div>
+</div>
+</div></body></html>`;
+}
+
+function genPageGerencia2() {
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Pipeline de Ventas</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#FFF8F0}header{background:#E65100;color:#fff;padding:40px}.logo-tag{font-size:11px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}h1{font-size:1.8rem;font-weight:800}.sub{opacity:.75;margin-top:8px;font-size:.9rem}.wrap{padding:36px 40px;max-width:1000px;margin:0 auto}.pipe{display:flex;gap:12px;margin-bottom:28px;overflow-x:auto;padding-bottom:8px}.col{background:#fff;border-radius:12px;padding:16px;min-width:180px;flex:1;border:1px solid #fde8d0}.col-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid}.item{background:#fff8f4;border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid #fde8d0;font-size:.85rem}.item .name{font-weight:700;color:#444;margin-bottom:3px}.item .val{font-size:.8rem;color:#E65100;font-weight:700}.card{background:#fff;border-radius:12px;padding:26px;margin-bottom:20px;border:1px solid #fde8d0}h3{font-size:1rem;font-weight:700;color:#E65100;margin-bottom:14px}</style>
+</head><body>
+<header><div class="logo-tag">Boletaenlinea · Gerencia Comercial</div><h1>Pipeline de Ventas</h1><p class="sub">Estado actual de prospectos y negociaciones — Mayo 2026</p></header>
+<div class="wrap">
+<div class="pipe">
+<div class="col"><div class="col-title" style="color:#9E9E9E;border-color:#9E9E9E">Prospecto</div>
+<div class="item"><div class="name">Festival Rock Manizales</div><div class="val">est. $28M</div></div>
+<div class="item"><div class="name">Obra de Teatro Bogotá</div><div class="val">est. $8M</div></div></div>
+<div class="col"><div class="col-title" style="color:#1565C0;border-color:#1565C0">En negociación</div>
+<div class="item"><div class="name">Concierto Vallenato Barranquilla</div><div class="val">est. $45M</div></div>
+<div class="item"><div class="name">Stand-Up Medellín × 3</div><div class="val">est. $18M</div></div></div>
+<div class="col"><div class="col-title" style="color:#E65100;border-color:#E65100">Contrato firmado</div>
+<div class="item"><div class="name">Empareja2 — Tour 2026</div><div class="val">$62M</div></div></div>
+<div class="col"><div class="col-title" style="color:#2E7D32;border-color:#2E7D32">Activo / En venta</div>
+<div class="item"><div class="name">El Puma — Bogotá</div><div class="val">$54M</div></div>
+<div class="item"><div class="name">Feos Románticos</div><div class="val">$16M</div></div></div>
+</div>
+<div class="card"><h3>Empresarios en seguimiento activo</h3>
+<p style="font-size:.9rem;color:#555;line-height:2">3 reuniones agendadas esta semana &nbsp;·&nbsp; 2 propuestas enviadas sin respuesta &nbsp;·&nbsp; Meta de cierres mayo: <strong style="color:#E65100">5 contratos</strong></p>
+</div></div></body></html>`;
+}
+
+// ══════════════════════════════════════════════
+//  ARRANQUE
+// ══════════════════════════════════════════════
+loadData();
+render();
+</script>
+</body>
+</html>
